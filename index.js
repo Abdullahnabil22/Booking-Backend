@@ -31,7 +31,7 @@ app.use("*", (req, res) => {
   res.status(404).json("Wrong Path");
 });
 
-app.listen(8900, () => {
+app.listen(3000, () => {
   connect();
   console.log("Connected to backend ");
 });
