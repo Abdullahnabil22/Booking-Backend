@@ -30,9 +30,9 @@ app.use("/roomTypes", roomTypeRoute);
 app.use("/bookings", bookingRoute);
 app.use("/carRentals", carRentalRoute);
 app.use("/user", usersRouter);
-// app.use("*", (req, res) => {
-//   res.status(404).json("Wrong Path");
-// });
+app.use("/", (req, res) => {
+  res.status(200).json("hello");
+});
 
 app.listen(3000, () => {
   connect();
