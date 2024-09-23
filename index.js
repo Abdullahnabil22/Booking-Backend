@@ -33,8 +33,8 @@ app.use("/user", usersRouter);
 app.use("/", (req, res) => {
   res.status(200).json("hello");
 });
-
-app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
   connect();
   console.log("Connected to backend ");
 });
@@ -42,6 +42,7 @@ app.listen(3000, () => {
 const connect = async () => {
   try {
     await mongoose.connect(process.env.MONGO);
+    console.log("Mongo URI:", process.env.MONGO); // Add this to check the value
     console.log("connected to booking db");
   } catch (error) {
     console.log(error.message);
