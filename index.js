@@ -1,3 +1,4 @@
+const serverless = require("serverless-http");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -30,6 +31,15 @@ app.use("/user", usersRouter);
 app.use("*", (req, res) => {
   res.status(404).json("Wrong Path");
 });
+
+// Your existing app setup
+app.use(express.json());
+app.get("/", (req, res) => {
+  res.send("Hello, Netlify!");
+});
+
+// Export as a serverless function
+module.exports.handler = serverless(app);
 
 app.listen(3000, () => {
   connect();
