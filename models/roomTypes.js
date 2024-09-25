@@ -21,23 +21,58 @@ const RoomTypeSchema = new mongoose.Schema({
       required: [true, "Description is required"],
     },
   },
+  subDescription: {
+    en: {
+      type: String,
+      required: [true, "Sub description is required"],
+      maxLength: [100, "Sub description must be less than 100 characters"],
+    },
+    ar: {
+      type: String,
+      required: [true, "Sub description is required"],
+      maxLength: [100, "Sub description must be less than 100 characters"],
+    },
+  },
   roomType: {
     type: {
       en: {
         type: String,
         required: [true, "Room type (English) is required"],
-        enum: ["Single", "Double", "Suite", "Studio", "Deluxe", "Penthouse"],
+        enum: [
+          "Deluxe Single",
+          "Deluxe Double",
+          -"Standard Single",
+          "Standard Double",
+        ],
       },
       ar: {
         type: String,
         required: [true, "Room type (Arabic) is required"],
-        enum: ["مفرد", "مزدوج", "جناح", "استوديو", "ديلوكس", "بنتهاوس"],
+        enum: [" ديلوكس مفرد", "ديلوكس مزدوج", "مفرد", "مزدوج"],
       },
     },
     images: [String],
     available: {
       type: Boolean,
       default: true,
+    },
+  },
+  beds: {
+    KingBed: {
+      type: Number,
+      required: [true, "Number of beds is required"],
+    },
+    QueenBed: {
+      type: Number,
+      required: [true, "Number of beds is required"],
+    },
+    TwinBed: {
+      type: Number,
+      required: [true, "Number of beds is required"],
+    },
+    SofaBed: {
+      type: Number,
+      required: [true, "Number of beds is required"],
     },
   },
   numberOfRooms: {
@@ -74,12 +109,10 @@ const RoomTypeSchema = new mongoose.Schema({
   hotelID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Hotel",
-    required: [true, "Hotel ID is required"],
   },
   apartmentID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Apartment",
-    required: [true, "Apartment ID is required"],
   },
 });
 
