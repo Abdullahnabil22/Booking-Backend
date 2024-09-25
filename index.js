@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
 require("dotenv").config();
+const paypal = require("./Services/paypal");
 const messageRoutes = require("./routes/message");
 const reviewRoutes = require("./routes/review");
 const flightRoutes = require("./routes/flights");
@@ -52,3 +53,27 @@ const connect = async () => {
     console.log(error.message);
   }
 };
+
+app.post("/pay", async (req, res) => {
+  try {
+    const url = await paypal.createOrder();
+
+    res.redirect(url);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/success", async (req, res) => {
+  try {
+    const paymentId = req.query;
+    const response = await paypal.capturePayment(paymentId);
+    res.json(response);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/cancel", (req, res) => {
+  res.send("Payment cancelled");
+});
