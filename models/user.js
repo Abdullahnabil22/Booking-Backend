@@ -1,45 +1,120 @@
-const mongoose = require("mongoose");
-const bcryptjs = require("bcryptjs");
+const mongoose = require('mongoose');
+const bcryptjs = require('bcryptjs');
 
-let userModel = mongoose.Schema(
-  {
+let users = mongoose.Schema({
     userName: {
-      type: String,
-      required: true,
-
-      unique: true,
+        en: {
+            type: String,
+            required: [true, "userName is required"],
+            unique: true,
+        },
+        ar: {
+            type: String,
+            required: [true, "name is required"],
+            unique: true,
+        }
+    },
+    firstName: {  
+        en: {
+            type: String,
+            required: [true, "firstName is required"],
+        },
+        ar: {
+            type: String,
+            required: [true, "firstName is required"],
+        }
+    },
+    lastName: {
+        en: {
+            type: String,
+            required: [true, "lastName is required"],
+        },
+        ar: {
+            type: String,
+            required: [true, "lastName is required"],
+        }
     },
     email: {
-      type: String,
-      required: true,
-      unique: true,
-      match: [/^\S+@\S+\.\S+$/, "Please use a valid email address"],
+        en: {
+            type: String,
+            required: [true, "email is required"],
+            unique: true,
+            match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'],
+        },
+        ar: {
+            type: String,
+            required: [true, "email is required"],
+            unique: true,
+            match: [/^\S+@\S+\.\S+$/, 'Please use a valid email'],
+        }
     },
     nationality: {
-      type: String,
-      required: true,
+        en: {
+            type: String,
+            required: [true, "nationality is required"],
+        },
+        ar: {
+            type: String,
+            required: [true, "nationality is required"],
+        }
     },
     members: {
-      type: String,
-      required: true,
+        en: {
+            type: [String], 
+            required: [true, "members are required"],
+        },
+        ar: {
+            type: [String],
+            required: [true, "members are required"],
+        }
     },
-    PhoneNumber: {
-      type: String,
+    phoneNumber: { 
+        en: {
+            type: String,
+        },
+        ar: {
+            type: String,
+        }
     },
     password: {
-      type: String,
+        en: {
+            type: String,
+        },
+        ar: {
+            type: String,
+        }
     },
-  },
-  { timestamps: true }
-);
+    role: {
+        en: {
+            type: String,
+            required: [true, "role is required"],
+            enum: ['admin', 'user', 'owner']
+        },
+        ar: {
+            type: String,
+            required: [true, "role is required"],
+            enum: ['admin', 'user', 'owner']
+        },
+    },
+    active: {  
+        en: {
+            type: Boolean,
+        },
+        ar: {
+            type: Boolean,
+        },
+    }
+ 
+}, { timestamps: true });
 
-userModel.pre("save", async function (next) {
-  if (this.isModified("password")) {
-    const salt = await bcryptjs.genSalt(10);
-    const hashedPassword = await bcryptjs.hashSync(this.password, salt);
-    this.password = hashedPassword;
-  }
-  next();
+users.pre('save', async function(next) {
+    if (this.isModified('password')) {
+        const salt = await bcryptjs.genSalt(10);
+        const hashedPassword = await bcryptjs.hashSync(this.password, salt);
+        this.password = hashedPassword;
+    }
+    next();
 });
 
-module.exports = mongoose.model("User", userModel);
+const userModel = mongoose.model('User', users);
+module.exports = userModel;
