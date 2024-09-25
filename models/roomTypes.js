@@ -1,16 +1,5 @@
 
 
-// const RoomTypeSchema = new mongoose.Schema({
-//   Type: String,
-//   images: [String],
-//   available: Boolean,
-//   hotelID: {
-//     type: mongoose.Schema.Types.ObjectId,
-//     ref: "Hotel",
-//   },
-// });
-
-// module.exports = mongoose.model("RoomType", RoomTypeSchema);
 
 
 const RoomTypeSchema = require("mongoose");
