@@ -10,9 +10,9 @@ const roomTypeRoute = require("./routes/rooms");
 const bookingRoute = require("./routes/booking");
 const carRentalRoute = require("./routes/carRentals");
 let hostRouter = require("./routes/hosts");
-let userRouter = require("./routes/hostUser");
 let apartmentRouter = require("./routes/apartment");
 var usersRouter = require("./routes/user");
+let amenitiesRouter = require("./routes/amenities");
 app.use(
   cors({
     origin: "*",
@@ -24,7 +24,7 @@ app.use(
 app.use(express.json());
 app.use("/host", hostRouter);
 app.use("/apartments", apartmentRouter);
-app.use("/hostUser", userRouter);
+app.use("/amenities", amenitiesRouter);
 app.use("/messages", messageRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/flights", flightRoutes);
@@ -47,7 +47,6 @@ app.listen(PORT, () => {
 const connect = async () => {
   try {
     await mongoose.connect(process.env.MONGO);
-    console.log("Mongo URI:", process.env.MONGO); // Add this to check the value
     console.log("connected to booking db");
   } catch (error) {
     console.log(error.message);

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-// Define the schema
+
 let ApartmentSchema = mongoose.Schema(
   {
     owner: {
