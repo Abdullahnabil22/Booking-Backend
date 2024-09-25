@@ -79,9 +79,13 @@ let users = mongoose.Schema({
     password: {
         en: {
             type: String,
+            required: [true, "password is required"],
+            match: [/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, "Password must be at least 8 characters long and contain at least one letter and one number."],
         },
         ar: {
             type: String,
+            required: [true, "password is required"],
+            match: [/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/, "Password must be at least 8 characters long and contain at least one letter and one number."],
         }
     },
     role: {
