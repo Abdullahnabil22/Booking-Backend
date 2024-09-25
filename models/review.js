@@ -12,19 +12,36 @@ const reviewSchema = new mongoose.Schema(
       required: true,
       ref: "Hotel",
     },
+    apartment_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Apartment",
+    },
     rating: {
       type: Number,
       required: true,
       min: 1,
-      max: 5,
+      max: 10,
     },
     comment: {
-      type: String,
-      required: true,
+      en: {
+        type: String,
+        required: true,
+      },
+      ar: {
+        type: String,
+        required: true,
+      },
     },
     timestamps: {
-      type: Date,
-      default: Date.now,
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
+      updatedAt: {
+        type: Date,
+        default: Date.now,
+      },
     },
   },
   { Collection: "review" }
