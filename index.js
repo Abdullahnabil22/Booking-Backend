@@ -11,6 +11,7 @@ const bookingRoute = require("./routes/booking");
 const carRentalRoute = require("./routes/carRentals");
 let hostRouter = require("./routes/hosts");
 let apartmentRouter = require("./routes/apartment");
+let amenitiesRouter = require("./routes/amenities");
 var usersRouter = require("./routes/user");
 app.use(
   cors({
@@ -23,6 +24,7 @@ app.use(
 app.use(express.json());
 app.use("/host", hostRouter);
 app.use("/apartments", apartmentRouter);
+app.use("/amenities", amenitiesRouter);
 app.use("/messages", messageRoutes);
 app.use("/reviews", reviewRoutes);
 app.use("/flights", flightRoutes);
