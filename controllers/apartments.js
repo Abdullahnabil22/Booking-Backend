@@ -35,7 +35,6 @@ let createApartment = async (req, res) => {
 let updateApartment = async (req, res) => {
   try {
     const apartment = await ApartmentModel.findByIdAndUpdate(
-      // Updated to use ApartmentModel
       req.params.id,
       req.body,
       {
