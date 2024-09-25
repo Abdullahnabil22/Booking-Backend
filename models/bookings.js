@@ -24,6 +24,11 @@ const BookingSchema = new mongoose.Schema(
       ref: "Host",
       required: true,
     },
+    apartment_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Apartment",
+      required: true,
+    },
     members: {
       type: Number,
       required: true,
@@ -49,6 +54,31 @@ const BookingSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
+      payment_id: {
+        type: String,
+        required: true,
+      },
+    },
+    room_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Room",
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    numberOfNights: {
+      type: Number,
+      required: true,
+    },
+    numberOfRooms: {
+      type: Number,
+      required: true,
+    },
+    status: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }
