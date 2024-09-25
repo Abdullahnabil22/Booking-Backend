@@ -1,4 +1,4 @@
-// const mongoose = require("mongoose");
+
 
 // const RoomTypeSchema = new mongoose.Schema({
 //   Type: String,
