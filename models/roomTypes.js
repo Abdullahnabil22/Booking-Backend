@@ -1,10 +1,6 @@
+const mongoose = require("mongoose");
 
-
-
-
-const RoomTypeSchema = require("mongoose");
-
-const RoomSchema = new mongoose.Schema({
+const RoomTypeSchema = new mongoose.Schema({
   name: {
     en: {
       type: String,
@@ -30,7 +26,7 @@ const RoomSchema = new mongoose.Schema({
       en: {
         type: String,
         required: [true, "Room type (English) is required"],
-        enum: ["Single", "Double", "Suite", "Studio", "Deluxe", "Penthouse"], 
+        enum: ["Single", "Double", "Suite", "Studio", "Deluxe", "Penthouse"],
       },
       ar: {
         type: String,
@@ -38,7 +34,7 @@ const RoomSchema = new mongoose.Schema({
         enum: ["مفرد", "مزدوج", "جناح", "استوديو", "ديلوكس", "بنتهاوس"],
       },
     },
-    images: [String], 
+    images: [String],
     available: {
       type: Boolean,
       default: true,
@@ -70,7 +66,6 @@ const RoomSchema = new mongoose.Schema({
     freeToiletries: { type: Boolean, default: false },
     dailyHousekeeping: { type: Boolean, default: false },
     iron: { type: Boolean, default: false },
-   
   },
   available: {
     type: Boolean,
