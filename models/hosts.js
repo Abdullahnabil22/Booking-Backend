@@ -34,9 +34,10 @@ let HostSchema = mongoose.Schema({
       type: String,
     },
   },
-  // images:[
+  photos:{
+    type:Array,
 
-  // ],
+  },
   details: {
     type: String,
   },
@@ -46,6 +47,131 @@ let HostSchema = mongoose.Schema({
   notes: {
     type: String,
   },
+  description:{
+    type: String,
+
+  },
+  subDescription:{
+    type: String,
+
+  },
+
+HouseRules:{
+  type: String,
+},
+
+Availablity:{
+  type:Boolean,
+
+} ,
+PricingPerGuest:{
+  type:Number,
+},
+CheckInTime :{
+  type:Boolean,
+
+},
+CheckOutTime :{
+  type:Boolean,
+
+},
+OwnerId :{
+  type:Number,
+
+},
+Approved:{
+  type:Boolean,
+
+} ,
+ Facilities:{
+  Satellite :{
+    type:Boolean,
+
+  },
+  Wifi:{
+    type:Boolean,
+
+  },
+  Pool:{
+    type:Boolean,
+
+  },
+  Breakfast :{
+    type:Boolean,
+
+  },
+  Beach:{
+    type:Boolean,
+
+  },
+  RoomService :{
+    type:Boolean,
+
+  },
+  Spa:{
+    type:Boolean,
+
+  },
+  FreeDrinks:{
+    type:Boolean,
+
+  },
+  SeaView:{
+    type:Boolean,
+
+  },
+  Parking:{
+    type:Boolean,
+
+  },
+  Activities:{
+    type:Boolean,
+
+  },
+  Safety:{
+    type:Boolean,
+
+  },
+  Cleaning :{
+    type:Boolean,
+
+  },
+  Child:{
+    type:Boolean,
+
+  },
+  Smoking:{
+    type:Boolean,
+
+  },
+  Pet:{
+    type:Boolean,
+
+  },
+  dinner:{
+    type:Boolean,
+
+  },
+  lunch:{
+    type:Boolean,
+
+  },
+
+ },
+ cancellation:{
+  freeCancellation:{
+    type:Boolean,
+  },
+  CancellationFee:{
+    type:Boolean,
+  },
+  CancellationDeadine:{
+    type:String,
+  },
+
+ }
+
+
 });
 
-module.exports = mongoose.model("host", HostSchema);
+module.exports = mongoose.model("host", HostSchema)
