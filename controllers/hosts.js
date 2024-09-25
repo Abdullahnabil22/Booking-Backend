@@ -1,7 +1,7 @@
 const express = require("express");
 
 const router = express.Router();
-const hostlistModel = require("../models/hosts"); // جايه من سكيما موديل
+const hostlistModel = require("../models/hosts");
 
 saveHosts = async (req, res) => {
   var newHost = req.body;
