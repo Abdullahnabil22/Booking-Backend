@@ -6,21 +6,35 @@ let {
   newReview,
   updateReview,
   deleteReview,
+  apartmentReviews,
 } = require("../controllers/review");
+const { auth, restrictTo } = require("../middlewares/auth");
 
-// Route to get all reviews for a specific hotel
-router.get("/hotel/:hotelId", hostReviews);
+router.get(
+  "/hotel/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  hostReviews
+);
 
-// Route to get all reviews by a specific user
-router.get("/user/:userId", userReviews);
+router.get(
+  "/user/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  userReviews
+);
 
-// Route to post a new review
-router.post("/", newReview);
+router.get(
+  "/apartment/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  apartmentReviews
+);
 
-// Route to update a review
-router.patch("/:id", updateReview);
+router.post("/", auth, restrictTo("admin", "user", "owner"), newReview);
 
-// Route to delete a review
-router.delete("/:id", deleteReview);
+router.patch("/:id", auth, restrictTo("admin", "user", "owner"), updateReview);
+
+router.delete("/:id", auth, restrictTo("admin", "user", "owner"), deleteReview);
 
 module.exports = router;

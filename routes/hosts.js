@@ -7,16 +7,18 @@ const {
   getAllhosts,
   deleteHostById,
   patchHostById,
+  getHostByOwnerId,
 } = require("../controllers/hosts");
 
 const { auth, restrictTo } = require("../middlewares/auth");
 
-router.post("/", auth, restrictTo("investor", "manager"), saveHosts);
+router.post("/", auth, restrictTo("admin", "owner"), saveHosts);
 
-router.get("/", auth, restrictTo("investor", "manager", "user"), getAllhosts);
+router.get("/", auth, restrictTo("admin", "user"), getAllhosts);
 
-router.delete("/:id", auth, restrictTo("manager"), deleteHostById);
+router.delete("/:id", auth, restrictTo("admin", "owner"), deleteHostById);
 
-router.patch("/:id", auth, restrictTo("manager"), patchHostById);
+router.patch("/:id", auth, restrictTo("owner"), patchHostById);
 
+router.get("/owner/:id", auth, restrictTo("admin", "owner"), getHostByOwnerId);
 module.exports = router;

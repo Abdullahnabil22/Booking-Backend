@@ -3,6 +3,7 @@ let userModell = require("../models/user");
 // let {user}= require('../modele/user')
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 getAllUser = async (req, res) => {
   try {
     let user = await userModell.find();
@@ -11,10 +12,17 @@ getAllUser = async (req, res) => {
     res.status(400).json({ massage: err.message });
   }
 };
+getuserById = async (req, res) => {
+  try {
+    let user = await userModell.findById(req.params.id);
+    res.json(user);
+  } catch (err) {
+    res.status(400).json({ massage: err.message });
+  }
+};
 
 let postUser = async (req, res) => {
   var newdata = req.body;
-  // console.log(newdata);
   try {
     let user = await userModell.create(newdata);
 
@@ -54,18 +62,11 @@ let login = async (req, res) => {
 
 let updatePassword = async (req, res) => {
   var { currentPassword, newPassword } = req.body;
-  console.log(currentPassword);
-
   if (!currentPassword || !newPassword) {
     return res.send("invalid currentPassword or newPassword");
   }
-  let user = await userModell.findById(req.id); ///////////////// همسك id علشان اقدر اجيب من خلاله الباسورد
-  console.log(req.id);
-
-  // console.log(currentPassword,newPassword)
-  // console.log(user.password)
+  let user = await userModell.findById(req.id);
   var passwordvaliad = await bcryptjs.compare(currentPassword, user.password);
-  ///// هقارن بين الياسورد المبعوت و الباسورد اللى عندى
 
   if (!passwordvaliad) {
     return res.send("invalid currentPasswordd or newPasswordd");
@@ -74,27 +75,15 @@ let updatePassword = async (req, res) => {
     { _id: req.id },
     newPassword
   );
-
   user.password = newPassword;
   await user.save();
   res.send("password updated successfully");
-};
-let sendForgetPassordLink = async (req, res) => {
-  console.log(req.body.email);
-  //     const user = await user.findeOne({email:req.body.email})
-  // if(!user){
-  //     return res.satus(404).json(" user not found")
-  // }
-  // const secret= process.env.SECRET +user.password
-  // const token =jwt.sign({email:user.email,id:user.id}, secret,{
-  //    expiresIn:'10m'
-  //   });
 };
 
 module.exports = {
   postUser,
   updatePassword,
   login,
-  sendForgetPassordLink,
   getAllUser,
+  getuserById,
 };

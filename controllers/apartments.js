@@ -22,6 +22,18 @@ let getApartmentById = async (req, res) => {
   }
 };
 
+let getApartmentByHostId = async (req, res) => {
+  try {
+    const apartment = await ApartmentModel.findOne({ hostId: req.params.id });
+    if (apartment == null) {
+      return res.status(404).json({ message: "Cannot find apartment" });
+    }
+    res.status(200).json(apartment);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 let createApartment = async (req, res) => {
   try {
     const apartment = new ApartmentModel(req.body);
@@ -68,4 +80,5 @@ module.exports = {
   createApartment,
   updateApartment,
   deleteApartment,
+  getApartmentByHostId,
 };

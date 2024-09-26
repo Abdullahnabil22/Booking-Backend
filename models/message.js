@@ -12,6 +12,11 @@ const messageSchema = new mongoose.Schema(
       required: true,
       ref: "User",
     },
+    apartment_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "Apartment",
+    },
     content: {
       type: String,
       required: true,

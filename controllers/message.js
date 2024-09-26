@@ -1,25 +1,34 @@
 const Message = require("../models/message");
 
-// Route to get all messages for a specific user
 let AllUserMessage = async (req, res) => {
   try {
-    const messages = await Message.find({ user_id: req.params.userId });
+    const messages = await Message.find({ user_id: req.params.id });
     res.json(messages);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-// Route to get all messages for a specific host
 
 let AllHostMessage = async (req, res) => {
   try {
-    const messages = await Message.find({ host_id: req.params.hostId });
+    const messages = await Message.find({ host_id: req.params.id });
     res.json(messages);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-// Route to send a message
+
+let AllApartmentMessage = async (req, res) => {
+  try {
+    const messages = await Message.find({
+      apartment_id: req.params.id,
+    });
+    res.json(messages);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 let sendMessage = async (req, res) => {
   try {
     const message = new Message(req.body);
@@ -29,7 +38,7 @@ let sendMessage = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
-// Route to update message status
+
 let messageStatus = async (req, res) => {
   try {
     const message = await Message.findById(req.params.id);
@@ -67,4 +76,5 @@ module.exports = {
   sendMessage,
   messageStatus,
   deleteMessage,
+  AllApartmentMessage,
 };
