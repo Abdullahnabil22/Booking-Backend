@@ -4,18 +4,34 @@ const {
   getRoomTypes,
   updateRoomType,
   deleteRoomType,
+  getRoomTypeById,
+  getRoomTypeByHostId,
+  getRoomTypeByApartmentId,
 } = require("../controllers/rooms");
+const { auth, restrictTo } = require("../middlewares/auth");
 
-// CREATE
-router.post("/", createRoomType);
+router.post("/", auth, restrictTo("admin", "owner"), createRoomType);
 
-// GET ALL
-router.get("/", getRoomTypes);
+router.get("/", auth, restrictTo("admin", "user", "owner"), getRoomTypes);
 
-// UPDATE
-router.patch("/:id", updateRoomType);
+router.get("/:id", auth, restrictTo("admin", "user", "owner"), getRoomTypeById);
 
-// DELETE
-router.delete("/:id", deleteRoomType);
+router.get(
+  "/host/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  getRoomTypeByHostId
+);
+
+router.get(
+  "/apartment/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  getRoomTypeByApartmentId
+);
+
+router.patch("/:id", auth, restrictTo("admin", "owner"), updateRoomType);
+
+router.delete("/:id", auth, restrictTo("admin", "owner"), deleteRoomType);
 
 module.exports = router;

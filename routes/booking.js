@@ -4,18 +4,37 @@ const {
   getBookings,
   updateBooking,
   deleteBooking,
+  getBookingByUserId,
+  getBookingByHostId,
+  getBookingByApartmentId,
 } = require("../controllers/bookings");
+const { auth, restrictTo } = require("../middlewares/auth");
 
-// GET ALL
-router.get("/", getBookings);
+router.get("/", auth, restrictTo("admin", "user", "owner"), getBookings);
 
-// CREATE
-router.post("/", createBooking);
+router.post("/", auth, restrictTo("admin", "user"), createBooking);
 
-// UPDATE
-router.patch("/:id", updateBooking);
+router.patch("/:id", auth, restrictTo("admin", "user"), updateBooking);
 
-// DELETE
-router.delete("/:id", deleteBooking);
+router.delete("/:id", auth, restrictTo("admin", "user"), deleteBooking);
+
+router.get(
+  "/user/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  getBookingByUserId
+);
+router.get(
+  "/host/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  getBookingByHostId
+);
+router.get(
+  "/apartment/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  getBookingByApartmentId
+);
 
 module.exports = router;

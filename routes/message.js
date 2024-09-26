@@ -6,21 +6,40 @@ let {
   sendMessage,
   messageStatus,
   deleteMessage,
+  AllApartmentMessage,
 } = require("../controllers/message");
+const { auth, restrictTo } = require("../middlewares/auth");
 
-// Route to get all messages for a specific user
-router.get("/user/:userId", AllUserMessage);
+router.get(
+  "/user/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  AllUserMessage
+);
 
-// Route to get all messages for a specific host
-router.get("/host/:hostId", AllHostMessage);
+router.get(
+  "/host/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  AllHostMessage
+);
 
-// Route to send a message
-router.post("/", sendMessage);
+router.get(
+  "/apartment/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  AllApartmentMessage
+);
 
-// Route to update message status
-router.patch("/:id", messageStatus);
+router.post("/", auth, restrictTo("admin", "user", "owner"), sendMessage);
 
-// Route to delete a message
-router.delete("/:id", deleteMessage);
+router.patch("/:id", auth, restrictTo("admin", "user", "owner"), messageStatus);
+
+router.delete(
+  "/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  deleteMessage
+);
 
 module.exports = router;

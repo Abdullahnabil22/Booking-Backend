@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-
 let ApartmentSchema = mongoose.Schema(
   {
     owner: {
@@ -26,6 +25,20 @@ let ApartmentSchema = mongoose.Schema(
         type: String,
         required: [true, "description is required"],
       },
+    },
+    subDescription: {
+      en: {
+        type: String,
+        required: [true, "subDescription is required"],
+      },
+      ar: {
+        type: String,
+        required: [true, "subDescription is required"],
+      },
+    },
+    phone: {
+      type: Number,
+      required: [true, "phone is required"],
     },
     location: {
       city: {
@@ -91,19 +104,6 @@ let ApartmentSchema = mongoose.Schema(
         required: [true, "Balcony is required"],
       },
     },
-
-    CheckInTime: {
-      type: String,
-      required: [true, "CheckInTime is required"],
-    },
-    CheckOutTime: {
-      type: String,
-      required: [true, "CheckOutTime is required"],
-    },
-    PricePerNight: {
-      type: Number,
-      required: [true, "price is required"],
-    },
     HouseRules: {
       NoSmoking: {
         type: Boolean,
@@ -117,21 +117,108 @@ let ApartmentSchema = mongoose.Schema(
         type: Boolean,
         required: [true, "NoParties is required"],
       },
-    },
-    Cancellation: {
-      Policy: {
-        en: String,
-        ar: String,
+      CheckInTime: {
+        type: String,
+        required: [true, "CheckInTime is required"],
       },
-      Refundable: Boolean,
-      DeadlineDays: Number,
+      CheckOutTime: {
+        type: String,
+        required: [true, "CheckOutTime is required"],
+      },
+      Cancellation: {
+        Policy: {
+          en: String,
+          ar: String,
+        },
+        Refundable: Boolean,
+        DeadlineDays: Number,
+      },
+      PricePerNight: {
+        type: Number,
+        required: [true, "price is required"],
+      },
+      Insurance: {
+        price: Number,
+        coverage: String,
+      },
     },
     Facilities: {
-      WiFi: Boolean,
-      AirConditioning: Boolean,
-      Parking: Boolean,
-      SwimmingPool: Boolean,
-      Gym: Boolean,
+      WiFi: {
+        type: Boolean,
+        default: false,
+      },
+      AirConditioning: {
+        type: Boolean,
+        default: false,
+      },
+      Parking: {
+        type: Boolean,
+        default: false,
+      },
+      SwimmingPool: {
+        type: Boolean,
+        default: false,
+      },
+      Gym: {
+        type: Boolean,
+        default: false,
+      },
+      WashingMachine: {
+        type: Boolean,
+        default: false,
+      },
+      Dryer: {
+        type: Boolean,
+        default: false,
+      },
+      Iron: {
+        type: Boolean,
+        default: false,
+      },
+      HairDryer: {
+        type: Boolean,
+        default: false,
+      },
+      IroningBoard: {
+        type: Boolean,
+        default: false,
+      },
+      TV: {
+        type: Boolean,
+        default: false,
+      },
+      CableTV: {
+        type: Boolean,
+        default: false,
+      },
+      DVDPlayer: {
+        type: Boolean,
+        default: false,
+      },
+      CDPlayer: {
+        type: Boolean,
+        default: false,
+      },
+      Radio: {
+        type: Boolean,
+        default: false,
+      },
+      AlarmClock: {
+        type: Boolean,
+        default: false,
+      },
+      Microwave: {
+        type: Boolean,
+        default: false,
+      },
+      Refrigerator: {
+        type: Boolean,
+        default: false,
+      },
+      Oven: {
+        type: Boolean,
+        default: false,
+      },
     },
     AverageRating: Number,
     ReviewCount: Number,

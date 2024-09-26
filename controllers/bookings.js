@@ -1,6 +1,5 @@
 const Booking = require("../models/bookings");
 
-// CREATE
 exports.createBooking = async (req, res) => {
   try {
     const booking = new Booking(req.body);
@@ -11,7 +10,33 @@ exports.createBooking = async (req, res) => {
   }
 };
 
-// GET ALL
+exports.getBookingByUserId = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ userId: req.params.id });
+    res.status(200).json(bookings);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.getBookingByHostId = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ host_id: req.params.id });
+    res.status(200).json(bookings);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.getBookingByApartmentId = async (req, res) => {
+  try {
+    const bookings = await Booking.find({ apartment_id: req.params.id });
+    res.status(200).json(bookings);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 exports.getBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
@@ -24,7 +49,6 @@ exports.getBookings = async (req, res) => {
   }
 };
 
-// UPDATE
 exports.updateBooking = async (req, res) => {
   try {
     const updatedBooking = await Booking.findByIdAndUpdate(
@@ -38,7 +62,6 @@ exports.updateBooking = async (req, res) => {
   }
 };
 
-// DELETE
 exports.deleteBooking = async (req, res) => {
   try {
     await Booking.findByIdAndDelete(req.params.id);

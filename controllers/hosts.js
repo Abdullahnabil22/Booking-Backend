@@ -1,9 +1,6 @@
-const express = require("express");
-
-const router = express.Router();
 const hostlistModel = require("../models/hosts");
 
-saveHosts = async (req, res) => {
+let saveHosts = async (req, res) => {
   var newHost = req.body;
   newHost.id = req.id;
   try {
@@ -14,7 +11,7 @@ saveHosts = async (req, res) => {
   }
 };
 
-getAllhosts = async (req, res) => {
+let getAllhosts = async (req, res) => {
   try {
     let host = await hostlistModel.find();
     res.json(host);
@@ -23,7 +20,31 @@ getAllhosts = async (req, res) => {
   }
 };
 
-deleteHostById = async (req, res) => {
+let getHostById = async (req, res) => {
+  try {
+    const host = await hostlistModel.findById(req.params.id);
+    if (host == null) {
+      return res.status(404).json({ message: "Cannot find host" });
+    }
+    res.status(200).json(host);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+let getHostByOwnerId = async (req, res) => {
+  try {
+    const host = await hostlistModel.findOne({ ownerId: req.params.id });
+    if (host == null) {
+      return res.status(404).json({ message: "Cannot find host" });
+    }
+    res.status(200).json(host);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+let deleteHostById = async (req, res) => {
   let { id } = req.params;
 
   let gethost = await hostlistModel.findByIdAndDelete(id);
@@ -41,7 +62,7 @@ deleteHostById = async (req, res) => {
   }
 };
 
-patchHostById = async (req, res) => {
+let patchHostById = async (req, res) => {
   let newhost = req.body;
   let { id } = req.params;
   try {
@@ -60,4 +81,11 @@ patchHostById = async (req, res) => {
   }
 };
 
-module.exports = { saveHosts, getAllhosts, deleteHostById, patchHostById }; ///هتروح للراوت
+module.exports = {
+  saveHosts,
+  getAllhosts,
+  deleteHostById,
+  patchHostById,
+  getHostById,
+  getHostByOwnerId,
+};
