@@ -3,7 +3,7 @@ const Review = require("../models/review");
 // Route to get all reviews for a specific hotel
 let hostReviews = async (req, res) => {
   try {
-    const reviews = await Review.find({ hotel_id: req.params.hotelId });
+    const reviews = await Review.find({ hotel_id: req.params.id });
     res.json(reviews);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -12,7 +12,15 @@ let hostReviews = async (req, res) => {
 // Route to get all reviews by a specific user
 let userReviews = async (req, res) => {
   try {
-    const reviews = await Review.find({ user_id: req.params.userId });
+    const reviews = await Review.find({ user_id: req.params.id });
+    res.json(reviews);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+let apartmentReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find({ apartment_id: req.params.id });
     res.json(reviews);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -72,4 +80,5 @@ module.exports = {
   newReview,
   updateReview,
   deleteReview,
+  apartmentReviews,
 };

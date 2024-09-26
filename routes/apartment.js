@@ -5,12 +5,24 @@ const {
   createApartment,
   updateApartment,
   deleteApartment,
+  getApartmentByHostId,
 } = require("../controllers/apartments");
+const { auth, restrictTo } = require("../middlewares/auth");
 
-router.get("/", getAllApartments);
-router.get("/:id", getApartmentById);
-router.post("/", createApartment);
-router.patch("/:id", updateApartment);
-router.delete("/:id", deleteApartment);
-
+router.get("/", auth, restrictTo("admin", "user", "owner"), getAllApartments);
+router.get(
+  "/:id",
+  auth,
+  restrictTo("admin", "user", "owner"),
+  getApartmentById
+);
+router.get(
+  "/owner/:id",
+  auth,
+  restrictTo("admin", "owner"),
+  getApartmentByHostId
+);
+router.post("/", auth, restrictTo("admin", "owner"), createApartment);
+router.patch("/:id", auth, restrictTo("admin", "owner"), updateApartment);
+router.delete("/:id", auth, restrictTo("admin", "owner"), deleteApartment);
 module.exports = router;

@@ -2,7 +2,6 @@ jwt = require("jsonwebtoken");
 
 const util = require("util");
 
-// ببعت توكن للهوست تحت مسمي athu  عشان يقدر ياكسس علي هوست وهو اصلا جاي من يوزر تحت لوجن
 exports.auth = async function (req, res, next) {
   let { authorization } = req.headers;
 
@@ -13,7 +12,7 @@ exports.auth = async function (req, res, next) {
   try {
     let decoded = await util.promisify(jwt.verify)(
       authorization,
-      process.env.secret
+      process.env.SECRET
     );
     req.id = decoded.id;
     req.role = decoded.role;
@@ -23,7 +22,6 @@ exports.auth = async function (req, res, next) {
   }
 };
 
-//all argument[]
 exports.restrictTo = function (...roles) {
   return function (req, res, next) {
     console.log(req.role);
@@ -34,22 +32,4 @@ exports.restrictTo = function (...roles) {
     }
     next();
   };
-};
-
-/////////////// midddelwear from user has token
-
-exports.authUser = async function (req, res, next) {
-  var authh = req.headers.authorization;
-  console.log(authh);
-  if (!authh) {
-    return res.send({ message: "unauthorizedd" });
-  }
-  try {
-    var decodeda = jwt.verify(authh, process.env.SECRET);
-    req.id = decodeda.id;
-
-    next();
-  } catch (err) {
-    next(err);
-  }
 };

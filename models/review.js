@@ -33,6 +33,11 @@ const reviewSchema = new mongoose.Schema(
         required: true,
       },
     },
+    replies: {
+      type: Array,
+      required: false,
+      default: [],
+    },
     timestamps: {
       createdAt: {
         type: Date,
