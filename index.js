@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
 require("dotenv").config();
+const cloudinary = require("cloudinary").v2;
 const paypal = require("./Services/paypal");
 const messageRoutes = require("./routes/message");
 const reviewRoutes = require("./routes/review");
@@ -76,4 +77,19 @@ app.get("/success", async (req, res) => {
 
 app.get("/cancel", (req, res) => {
   res.send("Payment cancelled");
+});
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+app.post("/upload", async (req, res) => {
+  try {
+    const result = await cloudinary.uploader.upload(req.body.image);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 });
