@@ -1,173 +1,391 @@
 const mongoose = require("mongoose");
 
 let HostSchema = mongoose.Schema({
-  hostname: {
-    type: String,
-    required: [true, "user name is required"],
-    unique: [true, "user name must be unique"],
-    minLength: 3,
-    maxLength: 16,
+  name: {
+    en:{
+      type: String,
+      required: [true, "user name is required"],
+      unique: [true, "user name must be unique"],
+      minLength: 3,
+      maxLength: 16,
+    },
+    ar:{
+      type: String,
+      required: [true, "user name is required"],
+      unique: [true, "user name must be unique"],
+      minLength: 3,
+      maxLength: 16,
+    }
+   
   },
   email: {
-    type: String,
-    required: [true, "email is required"],
-    unique: [true, "email must be unique"],
+    en:{
+      type: String,
+      required: [true, "email is required"],
+      unique: [true, "email must be unique"],
+    },
+    ar:{
+      type: String,
+      required: [true, "email is required"],
+      unique: [true, "email must be unique"],
+    }
+
   },
   password: {
-    type: Number,
+    en:{
+      type: Number,
+    },
+    ar:{
+      type: Number,
+    }
+   
   },
   phone: {
-    type: Number,
+    en:{
+      type: Number,
+    },
+    ar:{
+      type: Number,
+    }
+   
   },
   type: {
-    type: String,
+    en:{
+      type: String,
+    },
+    ar:{
+      type: String,
+    }
+   
     // enum:['Hotel','Resort','Apartment','Cottage','Villa'],
   },
   location: {
-    Address: {
-      type: String,
+    en:{
+      Address: {
+        type: String,
+      },
+      city: {
+        type: String,
+      },
+      country: {
+        type: String,
+      },
     },
-    city: {
-      type: String,
-    },
-    country: {
-      type: String,
-    },
+    ar:{
+      Address: {
+        type: String,
+      },
+      city: {
+        type: String,
+      },
+      country: {
+        type: String,
+      },
+    }
+
   },
   photos:{
-    type:Array,
+    en:{
+      type:Array,
+    },
+    ar:{
+      type:Array,
+    }
+
 
   },
   details: {
-    type: String,
+    en:{
+      type: String,
+    },
+    ar:{
+      type: String,
+    }
+
+ 
   },
   rating: {
-    type: Number,
+    en:{
+      type: Number,
+    },
+    ar:{
+      type: Number,
+    }
   },
   notes: {
-    type: String,
+    en:{
+      type: String,
+    },
+    ar:{
+      type: String,
+    }
+
   },
   description:{
-    type: String,
+    en:{
+      type: String,
+    },
+    ar:{
+      type: String,
+    }
+ 
 
   },
   subDescription:{
-    type: String,
-
+    en:{
+      type: String,
+    },
+    ar:{
+      type: String,
+    }
   },
 
 HouseRules:{
-  type: String,
+  en:{
+    type: String,
+  },
+  ar:{
+    type: String,
+  }
+
 },
 
 Availablity:{
-  type:Boolean,
-
+  en:{
+    type:Boolean,
+  },
+  ar:{
+    type:Boolean,
+  }
+ 
 } ,
 PricingPerGuest:{
-  type:Number,
+  en:{
+    type:Number,
+  },
+  ar:{
+    type:Number,
+  }
+
 },
 CheckInTime :{
-  type:Boolean,
+  en:{
+    type:Boolean,
+  },
+  ar:{
+    type:Boolean,
+  }
+ 
 
 },
 CheckOutTime :{
-  type:Boolean,
+  en:{
+    type:Boolean,
+  },
+  ar:{
+    type:Boolean,
+  }
+  
 
 },
 OwnerId :{
+  en:{
+  
+    type:Number,
+  },
+  ar:{
+     
   type:Number,
+  }
+
 
 },
 Approved:{
-  type:Boolean,
+  en:{
+  
+    type:Boolean,
+  },
+  ar:{
+    type:Boolean,
+  }
+
 
 } ,
  Facilities:{
-  Satellite :{
-    type:Boolean,
-
+  en:{
+    Satellite :{
+      type:Boolean,
+  
+    },
+    Wifi:{
+      type:Boolean,
+  
+    },
+    Pool:{
+      type:Boolean,
+  
+    },
+    Breakfast :{
+      type:Boolean,
+  
+    },
+    Beach:{
+      type:Boolean,
+  
+    },
+    RoomService :{
+      type:Boolean,
+  
+    },
+    Spa:{
+      type:Boolean,
+  
+    },
+    FreeDrinks:{
+      type:Boolean,
+  
+    },
+    SeaView:{
+      type:Boolean,
+  
+    },
+    Parking:{
+      type:Boolean,
+  
+    },
+    Activities:{
+      type:Boolean,
+  
+    },
+    Safety:{
+      type:Boolean,
+  
+    },
+    Cleaning :{
+      type:Boolean,
+  
+    },
+    Child:{
+      type:Boolean,
+  
+    },
+    Smoking:{
+      type:Boolean,
+  
+    },
+    Pet:{
+      type:Boolean,
+  
+    },
+    dinner:{
+      type:Boolean,
+  
+    },
+    lunch:{
+      type:Boolean,
+  
+    },
   },
-  Wifi:{
-    type:Boolean,
+  ar:{
+    Satellite :{
+      type:Boolean,
+  
+    },
+    Wifi:{
+      type:Boolean,
+  
+    },
+    Pool:{
+      type:Boolean,
+  
+    },
+    Breakfast :{
+      type:Boolean,
+  
+    },
+    Beach:{
+      type:Boolean,
+  
+    },
+    RoomService :{
+      type:Boolean,
+  
+    },
+    Spa:{
+      type:Boolean,
+  
+    },
+    FreeDrinks:{
+      type:Boolean,
+  
+    },
+    SeaView:{
+      type:Boolean,
+  
+    },
+    Parking:{
+      type:Boolean,
+  
+    },
+    Activities:{
+      type:Boolean,
+  
+    },
+    Safety:{
+      type:Boolean,
+  
+    },
+    Cleaning :{
+      type:Boolean,
+  
+    },
+    Child:{
+      type:Boolean,
+  
+    },
+    Smoking:{
+      type:Boolean,
+  
+    },
+    Pet:{
+      type:Boolean,
+  
+    },
+    dinner:{
+      type:Boolean,
+  
+    },
+    lunch:{
+      type:Boolean,
+  
+    },
+  }
 
-  },
-  Pool:{
-    type:Boolean,
-
-  },
-  Breakfast :{
-    type:Boolean,
-
-  },
-  Beach:{
-    type:Boolean,
-
-  },
-  RoomService :{
-    type:Boolean,
-
-  },
-  Spa:{
-    type:Boolean,
-
-  },
-  FreeDrinks:{
-    type:Boolean,
-
-  },
-  SeaView:{
-    type:Boolean,
-
-  },
-  Parking:{
-    type:Boolean,
-
-  },
-  Activities:{
-    type:Boolean,
-
-  },
-  Safety:{
-    type:Boolean,
-
-  },
-  Cleaning :{
-    type:Boolean,
-
-  },
-  Child:{
-    type:Boolean,
-
-  },
-  Smoking:{
-    type:Boolean,
-
-  },
-  Pet:{
-    type:Boolean,
-
-  },
-  dinner:{
-    type:Boolean,
-
-  },
-  lunch:{
-    type:Boolean,
-
-  },
 
  },
  cancellation:{
-  freeCancellation:{
-    type:Boolean,
+  en:{
+    freeCancellation:{
+      type:Boolean,
+    },
+    CancellationFee:{
+      type:Boolean,
+    },
+    CancellationDeadine:{
+      type:String,
+    },
   },
-  CancellationFee:{
-    type:Boolean,
-  },
-  CancellationDeadine:{
-    type:String,
-  },
+  ar:{
+    freeCancellation:{
+      type:Boolean,
+    },
+    CancellationFee:{
+      type:Boolean,
+    },
+    CancellationDeadine:{
+      type:String,
+    },
+  }
 
  }
 
