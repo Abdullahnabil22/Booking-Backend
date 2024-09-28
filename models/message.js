@@ -4,17 +4,14 @@ const messageSchema = new mongoose.Schema(
   {
     host_id: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "Host",
     },
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "User",
     },
     apartment_id: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
       ref: "Apartment",
     },
     content: {
@@ -30,6 +27,12 @@ const messageSchema = new mongoose.Schema(
       enum: ["unread", "read"],
       default: "unread",
     },
+    replies: [
+      {
+        type: String,
+        default: "",
+      },
+    ],
   },
   { Collection: "message" }
 );
