@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 require("dotenv").config();
 const cloudinary = require("./Services/cloudinary");
-const paypal = require("./Services/paypal");
+const { paypal, router: paypalRouter } = require("./Services/paypal");
 const messageRoutes = require("./routes/message");
 const reviewRoutes = require("./routes/review");
 const flightRoutes = require("./routes/flights");
@@ -16,7 +16,6 @@ let apartmentRouter = require("./routes/apartment");
 let amenitiesRouter = require("./routes/amenities");
 var usersRouter = require("./routes/user");
 let cloudinaryRouter = require("./Services/cloudinary").router;
-let paypalRouter = require("./Services/paypal").router;
 app.use(
   cors({
     origin: "*",

@@ -73,8 +73,7 @@ exports.capturePayment = async (paymentId) => {
 
 router.post("/pay", async (req, res) => {
   try {
-    const url = await paypal.createOrder();
-
+    const url = await exports.createOrder();
     res.redirect(url);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -84,7 +83,7 @@ router.post("/pay", async (req, res) => {
 router.get("/success", async (req, res) => {
   try {
     const paymentId = req.query;
-    const response = await paypal.capturePayment(paymentId);
+    const response = await exports.capturePayment(paymentId);
     res.json(response);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -95,4 +94,10 @@ router.get("/cancel", (req, res) => {
   res.send("Payment cancelled");
 });
 
-module.exports = { paypal, router };
+module.exports = {
+  paypal: {
+    createOrder: exports.createOrder,
+    capturePayment: exports.capturePayment,
+  },
+  router,
+};
