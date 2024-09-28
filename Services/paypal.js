@@ -1,4 +1,5 @@
 const axios = require("axios");
+const router = require("express").Router();
 
 async function generateAccessToken() {
   try {
@@ -69,3 +70,29 @@ exports.capturePayment = async (paymentId) => {
   });
   return response.data;
 };
+
+router.post("/pay", async (req, res) => {
+  try {
+    const url = await paypal.createOrder();
+
+    res.redirect(url);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/success", async (req, res) => {
+  try {
+    const paymentId = req.query;
+    const response = await paypal.capturePayment(paymentId);
+    res.json(response);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.get("/cancel", (req, res) => {
+  res.send("Payment cancelled");
+});
+
+module.exports = { paypal, router };
