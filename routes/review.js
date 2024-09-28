@@ -19,8 +19,8 @@ router.get(
 
 router.get(
   "/user/:id",
-  auth,
-  restrictTo("admin", "user", "owner"),
+  // auth,
+  // restrictTo("admin", "user", "owner"),
   userReviews
 );
 

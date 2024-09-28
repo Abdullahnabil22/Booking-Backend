@@ -12,9 +12,17 @@ const { auth, restrictTo } = require("../middlewares/auth");
 
 router.post("/", auth, restrictTo("admin", "owner"), createRoomType);
 
-router.get("/", auth, restrictTo("admin", "user", "owner"), getRoomTypes);
+router.get(
+  "/",
+  // auth, restrictTo("admin", "user", "owner"),
+  getRoomTypes
+);
 
-router.get("/:id", auth, restrictTo("admin", "user", "owner"), getRoomTypeById);
+router.get(
+  "/:id",
+  // auth, restrictTo("admin", "user", "owner"),
+  getRoomTypeById
+);
 
 router.get(
   "/host/:id",

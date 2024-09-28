@@ -12,8 +12,8 @@ const { auth, restrictTo } = require("../middlewares/auth");
 
 router.get(
   "/user/:id",
-  auth,
-  restrictTo("admin", "user", "owner"),
+  // auth,
+  // restrictTo("admin", "user", "owner"),
   AllUserMessage
 );
 

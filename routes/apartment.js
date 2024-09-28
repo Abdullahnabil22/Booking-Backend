@@ -9,7 +9,11 @@ const {
 } = require("../controllers/apartments");
 const { auth, restrictTo } = require("../middlewares/auth");
 
-router.get("/", auth, restrictTo("admin", "user", "owner"), getAllApartments);
+router.get(
+  "/",
+  // auth, restrictTo("admin", "user", "owner"),
+  getAllApartments
+);
 router.get(
   "/:id",
   auth,

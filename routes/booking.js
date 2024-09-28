@@ -20,8 +20,8 @@ router.delete("/:id", auth, restrictTo("admin", "user"), deleteBooking);
 
 router.get(
   "/user/:id",
-  auth,
-  restrictTo("admin", "user", "owner"),
+  // auth,
+  // restrictTo("admin", "user", "owner"),
   getBookingByUserId
 );
 router.get(

@@ -14,7 +14,11 @@ const { auth, restrictTo } = require("../middlewares/auth");
 
 router.post("/", auth, restrictTo("admin", "owner"), saveHosts);
 
-router.get("/", auth, restrictTo("admin", "user"), getAllhosts);
+router.get(
+  "/",
+  // auth, restrictTo("admin", "user"),
+  getAllhosts
+);
 
 router.delete("/:id", auth, restrictTo("admin", "owner"), deleteHostById);
 
