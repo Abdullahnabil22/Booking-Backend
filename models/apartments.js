@@ -228,10 +228,6 @@ let ApartmentSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    coordinates: {
-      latitude: Number,
-      longitude: Number,
-    },
   },
   { collection: "apartments" }
 );

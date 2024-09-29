@@ -236,10 +236,6 @@ let HostSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  coordinates: {
-    latitude: Number,
-    longitude: Number,
-  },
 });
 
 module.exports = mongoose.model("host", HostSchema);
