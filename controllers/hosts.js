@@ -2,12 +2,12 @@ const hostlistModel = require("../models/hosts");
 
 let saveHosts = async (req, res) => {
   var newHost = req.body;
-  newHost.id = req.id;
+  newHost.owner = req.user.id;
   try {
     const savehost = await hostlistModel.create(newHost);
-    res.status(201).json({ massage: "successss", data: savehost });
+    res.status(201).json({ message: "success", data: savehost });
   } catch (err) {
-    res.status(400).json({ massage: err.message });
+    res.status(400).json({ message: err.message });
   }
 };
 

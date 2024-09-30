@@ -11,7 +11,7 @@ const {
 } = require("../controllers/user");
 const { auth, restrictTo } = require("../middlewares/auth");
 
-router.post("/", auth, restrictTo("admin", "user", "owner"), postUser);
+router.post("/", postUser);
 router.get(
   "/",
   // auth, restrictTo("admin"),
@@ -23,7 +23,8 @@ router.get(
   getuserById
 );
 
-router.post("/login", restrictTo("admin", "user", "owner"), login);
+router.post("/login", login);
+router.post("/dashboardLogin", auth, login);
 router.patch(
   "/updatePassword",
   auth,

@@ -33,12 +33,12 @@ let postUser = async (req, res) => {
   }
 };
 let login = async (req, res) => {
-  var userName = req.body.userName;
+  var email = req.body.email;
   var password = req.body.password;
-  if (!userName || !password) {
+  if (!email || !password) {
     return res.json("please enter email and password");
   } else {
-    var loginuserName = await userModell.findOne({ userName: userName });
+    var loginuserName = await userModell.findOne({ email: email });
     if (!loginuserName) {
       return res.json("please enter valid email or password");
     }
@@ -53,7 +53,7 @@ let login = async (req, res) => {
   }
   console.log(process.env.SECRET);
   var token = jwt.sign(
-    { userName: loginuserName.userName, id: loginuserName._id },
+    { email: loginuserName.email, id: loginuserName._id },
     process.env.SECRET
   );
   console.log(req.body);
