@@ -64,7 +64,10 @@ exports.updateBooking = async (req, res) => {
 
 exports.deleteBooking = async (req, res) => {
   try {
-    await Booking.findByIdAndDelete(req.params.id);
+    const booking = await Booking.findByIdAndDelete(req.params.id);
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
     res.status(200).json("Booking has been deleted...");
   } catch (err) {
     res.status(500).json(err);

@@ -46,19 +46,17 @@ let getHostByOwnerId = async (req, res) => {
 
 let deleteHostById = async (req, res) => {
   let { id } = req.params;
-
-  let gethost = await hostlistModel.findByIdAndDelete(id);
-
   try {
+    let gethost = await hostlistModel.findByIdAndDelete(id);
     if (gethost) {
       res
         .status(200)
-        .json({ massage: `Document with ID ${id} has been deleted` });
+        .json({ message: `Document with ID ${id} has been deleted` });
     } else {
-      res.status(404).json({ massage: err.message });
+      return res.status(404).json({ message: "Host not found" });
     }
-  } catch {
-    res.status(404).json({ massage: err.message });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 

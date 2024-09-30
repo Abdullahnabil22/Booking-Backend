@@ -42,7 +42,7 @@ let sendMessage = async (req, res) => {
 let messageStatus = async (req, res) => {
   try {
     const message = await Message.findById(req.params.id);
-    if (message == null) {
+    if (!message) {
       return res.status(404).json({ message: "Cannot find message" });
     }
 

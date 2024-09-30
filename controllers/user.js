@@ -15,6 +15,9 @@ getAllUser = async (req, res) => {
 getuserById = async (req, res) => {
   try {
     let user = await userModell.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.json(user);
   } catch (err) {
     res.status(400).json({ massage: err.message });
@@ -78,6 +81,10 @@ let updatePassword = async (req, res) => {
     { _id: req.id },
     newPassword
   );
+  if (!updateuserr) {
+    // Check if update was successful
+    return res.status(404).json({ message: "User not found" });
+  }
   user.password = newPassword;
   await user.save();
   res.send("password updated successfully");
