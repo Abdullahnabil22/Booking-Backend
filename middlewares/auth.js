@@ -24,7 +24,6 @@ exports.auth = async function (req, res, next) {
 
 exports.restrictTo = function (...roles) {
   return function (req, res, next) {
-    console.log(req.role);
     if (!roles.includes(req.role)) {
       return res
         .status(403)

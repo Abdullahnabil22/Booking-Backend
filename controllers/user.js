@@ -53,10 +53,13 @@ let login = async (req, res) => {
   }
   console.log(process.env.SECRET);
   var token = jwt.sign(
-    { email: loginuserName.email, id: loginuserName._id },
+    {
+      email: loginuserName.email,
+      id: loginuserName._id,
+      role: loginuserName.role,
+    },
     process.env.SECRET
   );
-  console.log(req.body);
   res.send(token);
 };
 
