@@ -19,19 +19,23 @@ router.get(
 
 router.get(
   "/host/:id",
-  auth,
-  restrictTo("admin", "user", "owner"),
+  // auth,
+  // restrictTo("admin", "user", "owner"),
   AllHostMessage
 );
 
 router.get(
   "/apartment/:id",
-  auth,
-  restrictTo("admin", "user", "owner"),
+  // auth,
+  // restrictTo("admin", "user", "owner"),
   AllApartmentMessage
 );
 
-router.post("/", auth, restrictTo("admin", "user", "owner"), sendMessage);
+router.post(
+  "/",
+  // auth, restrictTo("admin", "user", "owner"),
+  sendMessage
+);
 
 router.patch("/:id", auth, restrictTo("admin", "user", "owner"), messageStatus);
 

@@ -289,7 +289,6 @@ let AmenitiesSchema = mongoose.Schema(
       },
       WakeUpCall: {
         type: Boolean,
-        type: Boolean,
         default: false,
       },
       ToiletriesDelivery: {
@@ -435,6 +434,116 @@ let AmenitiesSchema = mongoose.Schema(
         default: false,
       },
       ChildSafetyLock: {
+        type: Boolean,
+        default: false,
+      },
+    },
+    hostId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "hosts",
+    },
+    facilities: {
+      WiFi: {
+        type: Boolean,
+        default: false,
+      },
+      AirConditioning: {
+        type: Boolean,
+        default: false,
+      },
+      Parking: {
+        type: Boolean,
+        default: false,
+      },
+      SwimmingPool: {
+        type: Boolean,
+        default: false,
+      },
+      Gym: {
+        type: Boolean,
+        default: false,
+      },
+      Breakfast: {
+        type: Boolean,
+        default: false,
+      },
+      Dinner: {
+        type: Boolean,
+        default: false,
+      },
+      Lunch: {
+        type: Boolean,
+        default: false,
+      },
+      RoomService: {
+        type: Boolean,
+        default: false,
+      },
+      AirportShuttle: {
+        type: Boolean,
+        default: false,
+      },
+      Babysitting: {
+        type: Boolean,
+        default: false,
+      },
+      Laundry: {
+        type: Boolean,
+        default: false,
+      },
+      DryCleaning: {
+        type: Boolean,
+        default: false,
+      },
+      Ironing: {
+        type: Boolean,
+        default: false,
+      },
+      Beachfront: {
+        type: Boolean,
+        default: false,
+      },
+      FreeParking: {
+        type: Boolean,
+        default: false,
+      },
+      Spa: {
+        type: Boolean,
+        default: false,
+      },
+      Sauna: {
+        type: Boolean,
+        default: false,
+      },
+      SteamRoom: {
+        type: Boolean,
+        default: false,
+      },
+      HotTub: {
+        type: Boolean,
+        default: false,
+      },
+      FitnessCenter: {
+        type: Boolean,
+        default: false,
+      },
+      Yoga: {
+        type: Boolean,
+        default: false,
+      },
+      Massage: {
+        type: Boolean,
+        default: false,
+      },
+      Pool: {
+        type: Boolean,
+        default: false,
+      },
+      Garden: {
+        type: Boolean,
+        default: false,
+      },
+      Terrace: {
         type: Boolean,
         default: false,
       },

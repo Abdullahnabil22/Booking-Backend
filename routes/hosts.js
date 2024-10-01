@@ -3,7 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const {
-  saveHosts,
+  saveHostsbyOwnerId,
   getAllhosts,
   deleteHostById,
   patchHostById,
@@ -12,7 +12,7 @@ const {
 
 const { auth, restrictTo } = require("../middlewares/auth");
 
-router.post("/", auth, restrictTo("admin", "owner"), saveHosts);
+router.post("/:id", saveHostsbyOwnerId);
 
 router.get(
   "/",

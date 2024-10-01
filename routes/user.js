@@ -19,7 +19,8 @@ router.get(
 );
 router.get(
   "/:id",
-  // auth, restrictTo("admin"),
+  // auth,
+  //  restrictTo("admin"),
   getuserById
 );
 

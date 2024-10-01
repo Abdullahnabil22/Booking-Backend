@@ -19,7 +19,6 @@ let users = mongoose.Schema(
     email: {
       type: String,
       required: [true, "email is required"],
-      unique: true,
       match: [/^\S+@\S+\.\S+$/, "Please use a valid email address"],
     },
     nationality: {

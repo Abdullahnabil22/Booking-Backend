@@ -15,7 +15,7 @@ let hostRouter = require("./routes/hosts");
 let apartmentRouter = require("./routes/apartment");
 let amenitiesRouter = require("./routes/amenities");
 var usersRouter = require("./routes/user");
-let cloudinaryRouter = require("./Services/cloudinary").router;
+const cloudinaryRouter = require("./Services/cloudinary").router;
 app.use(
   cors({
     origin: "*",

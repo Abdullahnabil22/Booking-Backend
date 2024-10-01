@@ -1,10 +1,10 @@
 const hostlistModel = require("../models/hosts");
 
-let saveHosts = async (req, res) => {
+let saveHostsbyOwnerId = async (req, res) => {
+  var ownerId = req.params.id;
   var newHost = req.body;
-  newHost.owner = req.user.id;
   try {
-    const savehost = await hostlistModel.create(newHost);
+    const savehost = await hostlistModel.create({ ...newHost, ownerId });
     res.status(201).json({ message: "success", data: savehost });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -80,7 +80,7 @@ let patchHostById = async (req, res) => {
 };
 
 module.exports = {
-  saveHosts,
+  saveHostsbyOwnerId,
   getAllhosts,
   deleteHostById,
   patchHostById,

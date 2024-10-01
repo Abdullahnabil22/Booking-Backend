@@ -1,5 +1,7 @@
 const cloudinary = require("cloudinary").v2;
 const router = require("express").Router();
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_NAME,
@@ -7,9 +9,12 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-router.post("/upload", async (req, res) => {
+router.post("/upload", upload.single("image"), async (req, res) => {
   try {
-    const result = await cloudinary.uploader.upload(req.body.image);
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const result = await cloudinary.uploader.upload(req.file.path);
     res.json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });
