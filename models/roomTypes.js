@@ -34,27 +34,20 @@ const RoomTypeSchema = new mongoose.Schema({
     },
   },
   roomType: {
-    type: {
-      en: {
-        type: String,
-        required: [true, "Room type (English) is required"],
-        enum: [
-          "Deluxe Single",
-          "Deluxe Double",
-          -"Standard Single",
-          "Standard Double",
-        ],
-      },
-      ar: {
-        type: String,
-        required: [true, "Room type (Arabic) is required"],
-        enum: [" ديلوكس مفرد", "ديلوكس مزدوج", "مفرد", "مزدوج"],
-      },
+    en: {
+      type: String,
+      // required: [true, "Room type (English) is required"],
+      enum: [
+        "Deluxe Single",
+        "Deluxe Double",
+        "Standard Single",
+        "Standard Double",
+      ],
     },
-    images: [String],
-    available: {
-      type: Boolean,
-      default: true,
+    ar: {
+      type: String,
+      // required: [true, "Room type (Arabic) is required"],
+      enum: ["ديلوكس مفرد", "ديلوكس مزدوج", "مفرد", "مزدوج"],
     },
   },
   beds: {
@@ -71,6 +64,10 @@ const RoomTypeSchema = new mongoose.Schema({
       required: [true, "Number of beds is required"],
     },
     SofaBed: {
+      type: Number,
+      required: [true, "Number of beds is required"],
+    },
+    SingleBed: {
       type: Number,
       required: [true, "Number of beds is required"],
     },
@@ -101,6 +98,10 @@ const RoomTypeSchema = new mongoose.Schema({
     freeToiletries: { type: Boolean, default: false },
     dailyHousekeeping: { type: Boolean, default: false },
     iron: { type: Boolean, default: false },
+  },
+  price: {
+    type: Number,
+    required: [true, "Price is required"],
   },
   available: {
     type: Boolean,
