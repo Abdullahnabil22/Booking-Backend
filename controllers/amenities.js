@@ -31,6 +31,17 @@ let createAmenity = async (req, res) => {
   }
 };
 
+let createAmenityByHotelId = async (req, res) => {
+  try {
+    let hotelId = req.params.id;
+    let newAmenity = req.body;
+    const amenity = await Amenities.create({ ...newAmenity, hotelId });
+    res.status(201).json(amenity);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 let updateAmenity = async (req, res) => {
   try {
     const amenity = await Amenities.findByIdAndUpdate(req.params.id, req.body, {
@@ -63,4 +74,5 @@ module.exports = {
   createAmenity,
   updateAmenity,
   deleteAmenity,
+  createAmenityByHotelId,
 };

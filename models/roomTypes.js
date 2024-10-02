@@ -75,7 +75,7 @@ const RoomTypeSchema = new mongoose.Schema({
       required: [true, "Number of beds is required"],
     },
   },
-  numberOfRooms: {
+  numberOfRoomsWithThisType: {
     type: Number,
     required: [true, "Number of rooms is required"],
   },

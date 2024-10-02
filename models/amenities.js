@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 let AmenitiesSchema = mongoose.Schema(
   {
+    hotelId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "hotels",
+    },
     room: {
       ClothesRack: {
         type: Boolean,
@@ -443,14 +447,6 @@ let AmenitiesSchema = mongoose.Schema(
       ref: "hosts",
     },
     facilities: {
-      WiFi: {
-        type: Boolean,
-        default: false,
-      },
-      AirConditioning: {
-        type: Boolean,
-        default: false,
-      },
       Parking: {
         type: Boolean,
         default: false,
@@ -540,10 +536,6 @@ let AmenitiesSchema = mongoose.Schema(
         default: false,
       },
       Garden: {
-        type: Boolean,
-        default: false,
-      },
-      Terrace: {
         type: Boolean,
         default: false,
       },

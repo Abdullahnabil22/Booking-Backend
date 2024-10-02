@@ -34,7 +34,7 @@ let getHostById = async (req, res) => {
 
 let getHostByOwnerId = async (req, res) => {
   try {
-    const host = await hostlistModel.findOne({ ownerId: req.params.id });
+    const host = await hostlistModel.find({ ownerId: req.params.id });
     if (host == null) {
       return res.status(404).json({ message: "Cannot find host" });
     }

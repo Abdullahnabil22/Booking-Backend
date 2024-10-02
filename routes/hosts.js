@@ -24,5 +24,9 @@ router.delete("/:id", auth, restrictTo("admin", "owner"), deleteHostById);
 
 router.patch("/:id", auth, restrictTo("owner"), patchHostById);
 
-router.get("/owner/:id", auth, restrictTo("admin", "owner"), getHostByOwnerId);
+router.get(
+  "/owner/:id",
+  // auth, restrictTo("admin", "owner"),
+  getHostByOwnerId
+);
 module.exports = router;

@@ -10,6 +10,17 @@ exports.createRoomType = async (req, res) => {
     res.status(400).send(error);
   }
 };
+
+exports.createRoomTypeByHotelId = async (req, res) => {
+  try {
+    const roomType = new RoomType({ ...req.body, hotelId: req.params.id });
+    await roomType.save();
+    res.status(201).send(roomType);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+};
+
 // GET ALL
 exports.getRoomTypes = async (req, res) => {
   try {

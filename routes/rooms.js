@@ -7,6 +7,7 @@ const {
   getRoomTypeById,
   getRoomTypeByHostId,
   getRoomTypeByApartmentId,
+  createRoomTypeByHotelId,
 } = require("../controllers/rooms");
 const { auth, restrictTo } = require("../middlewares/auth");
 
@@ -23,6 +24,8 @@ router.get(
   // auth, restrictTo("admin", "user", "owner"),
   getRoomTypeById
 );
+
+router.post("/hotel/:id", createRoomTypeByHotelId);
 
 router.get(
   "/host/:id",
