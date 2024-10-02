@@ -20,7 +20,7 @@ router.get(
   getAllhosts
 );
 
-router.delete("/:id", auth, restrictTo("admin", "owner"), deleteHostById);
+router.delete("/:id", deleteHostById);
 
 router.patch("/:id", auth, restrictTo("owner"), patchHostById);
 
