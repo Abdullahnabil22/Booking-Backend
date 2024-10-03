@@ -63,8 +63,10 @@ let deleteHostById = async (req, res) => {
 let patchHostById = async (req, res) => {
   let newhost = req.body;
   let { id } = req.params;
+  
   try {
-    let gethost = await hostlistModel.findByIdAndUpdate(id, { $set: newtodo });
+    let gethost = await hostlistModel.findByIdAndUpdate(id, { $set: newhost });
+
 
     if (gethost) {
       res.status(200).json({
