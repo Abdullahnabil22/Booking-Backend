@@ -44,6 +44,15 @@ let createApartment = async (req, res) => {
   }
 };
 
+let createApartmentByOwnerId = async (req, res) => {
+  ownerId = req.params.id;
+  try {
+    const apartment = await ApartmentModel.create({ ...req.body, ownerId });
+    res.status(201).json(apartment);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
 let updateApartment = async (req, res) => {
   try {
     const apartment = await ApartmentModel.findByIdAndUpdate(
@@ -81,4 +90,5 @@ module.exports = {
   updateApartment,
   deleteApartment,
   getApartmentByHostId,
+  createApartmentByOwnerId,
 };

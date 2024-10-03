@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 let ApartmentSchema = mongoose.Schema(
   {
-    owner: {
+    ownerId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
     },
@@ -96,11 +96,11 @@ let ApartmentSchema = mongoose.Schema(
         required: [true, "LivingRooms is required"],
       },
       Kitchen: {
-        type: Boolean,
+        type: Number,
         required: [true, "Kitchen is required"],
       },
       Balcony: {
-        type: Boolean,
+        type: Number,
         required: [true, "Balcony is required"],
       },
     },
