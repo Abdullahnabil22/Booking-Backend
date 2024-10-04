@@ -22,12 +22,10 @@ const BookingSchema = new mongoose.Schema(
     host_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Host",
-      required: true,
     },
     apartment_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Apartment",
-      required: true,
     },
     members: {
       type: Number,

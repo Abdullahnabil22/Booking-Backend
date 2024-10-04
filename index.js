@@ -16,6 +16,7 @@ let apartmentRouter = require("./routes/apartment");
 let amenitiesRouter = require("./routes/amenities");
 var usersRouter = require("./routes/user");
 const cloudinaryRouter = require("./Services/cloudinary").router;
+const earningRouter = require("./controllers/earning");
 app.use(
   cors({
     origin: "*",
@@ -35,6 +36,7 @@ app.use("/carRentals", carRentalRoute);
 app.use("/user", usersRouter);
 app.use("/cloudinary", cloudinaryRouter);
 app.use("/paypal", paypalRouter);
+app.use("/earnings", earningRouter);
 app.use("/", (req, res) => {
   res.status(200).json("hello");
 });
