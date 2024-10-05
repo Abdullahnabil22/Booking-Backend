@@ -60,6 +60,7 @@ let login = async (req, res) => {
       email: loginuserName.email,
       id: loginuserName._id,
       role: loginuserName.role,
+      username: loginuserName.userName,
     },
     process.env.SECRET
   );

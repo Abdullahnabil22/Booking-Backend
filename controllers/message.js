@@ -1,80 +1,87 @@
+const express = require("express");
+const router = express.Router();
 const Message = require("../models/message");
+const Host = require("../models/hosts");
+const Apartment = require("../models/apartments");
 
-let AllUserMessage = async (req, res) => {
+router.get("/:ownerId", async (req, res) => {
   try {
-    const messages = await Message.find({ user_id: req.params.id });
-    res.json(messages);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
+    const { ownerId } = req.params;
+    if (!ownerId) {
+      return res.status(400).json({ message: "Owner ID is required" });
+    }
 
-let AllHostMessage = async (req, res) => {
-  try {
-    const messages = await Message.find({ host_id: req.params.id });
-    res.json(messages);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-let AllApartmentMessage = async (req, res) => {
-  try {
     const messages = await Message.find({
-      apartment_id: req.params.id,
+      $or: [{ sender: ownerId }, { receiver: ownerId }],
     });
-    res.json(messages);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
 
-let sendMessage = async (req, res) => {
+    console.log("Before populate:", messages);
+
+    const populatedMessages = await Message.populate(messages, [
+      { path: "sender" },
+      { path: "receiver" },
+      {
+        path: "hostId",
+        model: "host",
+        strictPopulate: false,
+      },
+      { path: "apartmentId" },
+    ]);
+
+    console.log("After populate:", populatedMessages);
+
+    const hostIds = messages.map((message) => message.hostId);
+    const hosts = await Host.find({ _id: { $in: hostIds } });
+    const apartmentIds = messages.map((message) => message.apartmentId);
+    const apartments = await Apartment.find({ _id: { $in: apartmentIds } });
+    console.log("Found hosts:", hosts);
+    console.log("Found apartments:", apartments);
+
+    res.json(populatedMessages);
+  } catch (error) {
+    console.error("Error in GET /messages/:ownerId:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+router.post("/", async (req, res) => {
   try {
-    const message = new Message(req.body);
+    const { senderId, receiverId, apartmentId, hostId, content } = req.body;
+
+    if (!senderId || !receiverId || (!hostId && !apartmentId) || !content) {
+      return res.status(400).json({ message: "Missing required fields" });
+    }
+
+    const message = new Message({
+      sender: senderId,
+      receiver: receiverId,
+      apartmentId,
+      hostId,
+      content,
+    });
+
     const newMessage = await message.save();
     res.status(201).json(newMessage);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+  } catch (error) {
+    console.error("Error in POST /messages:", error);
+    res.status(400).json({ message: error.message });
   }
-};
+});
 
-let messageStatus = async (req, res) => {
+router.patch("/:id/read", async (req, res) => {
   try {
     const message = await Message.findById(req.params.id);
     if (!message) {
-      return res.status(404).json({ message: "Cannot find message" });
+      return res.status(404).json({ message: "Message not found" });
     }
 
-    if (req.body.status != null) {
-      message.status = req.body.status;
-    }
-
-    const updatedMessage = await message.save();
-    res.json(updatedMessage);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    message.read = true;
+    await message.save();
+    res.json(message);
+  } catch (error) {
+    console.error("Error in PATCH /messages/:id/read:", error);
+    res.status(400).json({ message: error.message });
   }
-};
-let deleteMessage = async (req, res) => {
-  try {
-    const message = await Message.findById(req.params.id);
-    if (!message) {
-      return res.status(404).json({ message: "Cannot find message" });
-    }
+});
 
-    await message.deleteOne({ _id: req.params.id });
-    res.json({ message: "Deleted message" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-};
-
-module.exports = {
-  AllUserMessage,
-  AllHostMessage,
-  sendMessage,
-  messageStatus,
-  deleteMessage,
-  AllApartmentMessage,
-};
+module.exports = router;

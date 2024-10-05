@@ -2,10 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const app = express();
+const socketIo = require("socket.io");
+const http = require("http");
 require("dotenv").config();
 const cloudinary = require("./Services/cloudinary");
 const { paypal, router: paypalRouter } = require("./Services/paypal");
-const messageRoutes = require("./routes/message");
 const reviewRoutes = require("./routes/review");
 const flightRoutes = require("./routes/flights");
 const roomTypeRoute = require("./routes/rooms");
@@ -15,6 +16,7 @@ let hostRouter = require("./routes/hosts");
 let apartmentRouter = require("./routes/apartment");
 let amenitiesRouter = require("./routes/amenities");
 var usersRouter = require("./routes/user");
+const messageRoutes = require("./controllers/message");
 const cloudinaryRouter = require("./Services/cloudinary").router;
 const earningRouter = require("./controllers/earning");
 app.use(
@@ -58,3 +60,21 @@ const connect = async () => {
     console.log(error.message);
   }
 };
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:4200",
+    methods: ["GET", "POST"],
+  },
+});
+io.on("connection", (socket) => {
+  console.log("New client connected");
+
+  socket.on("sendMessage", (message) => {
+    io.emit("newMessage", message);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});

@@ -1,40 +1,37 @@
 const mongoose = require("mongoose");
 
-const messageSchema = new mongoose.Schema(
-  {
-    host_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Host",
-    },
-    user_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    apartment_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Apartment",
-    },
-    content: {
-      type: String,
-      required: true,
-    },
-    timestamps: {
-      type: Date,
-      default: Date.now,
-    },
-    status: {
-      type: String,
-      enum: ["unread", "read"],
-      default: "unread",
-    },
-    replies: [
-      {
-        type: String,
-        default: "",
-      },
-    ],
+const messageSchema = new mongoose.Schema({
+  sender: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    // required: true,
   },
-  { Collection: "message" }
-);
+  receiver: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    // required: true,
+  },
+  apartmentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Apartment",
+  },
+  hostId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "host",
+    // required: true,
+  },
+  content: {
+    type: String,
+    // required: true,
+  },
+  timestamp: {
+    type: Date,
+    default: Date.now,
+  },
+  read: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 module.exports = mongoose.model("Message", messageSchema);
