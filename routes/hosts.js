@@ -9,7 +9,8 @@ const {
   patchHostById,
   getHostByOwnerId,
   getHostById,
- 
+  
+
 } = require("../controllers/hosts");
 
 const { auth, restrictTo } = require("../middlewares/auth");
