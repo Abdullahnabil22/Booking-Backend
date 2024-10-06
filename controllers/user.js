@@ -43,7 +43,7 @@ let login = async (req, res) => {
   } else {
     var loginuserName = await userModell.findOne({ email: email });
     if (!loginuserName) {
-      return res.json("please enter valid email or password");
+      return res.status(404).json("please enter valid email or password");
     }
 
     let passwordvaliad = await bcryptjs.compare(
@@ -51,7 +51,7 @@ let login = async (req, res) => {
       loginuserName.password
     );
     if (!passwordvaliad) {
-      return res.json("please enter valid email or password");
+      return res.status(404).json("please enter valid email or password");
     }
   }
   console.log(process.env.SECRET);
@@ -64,7 +64,7 @@ let login = async (req, res) => {
     },
     process.env.SECRET
   );
-  res.send(token);
+  res.status(200).send(token);
 };
 
 let updatePassword = async (req, res) => {
