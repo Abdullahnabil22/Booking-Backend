@@ -1,4 +1,6 @@
 const hostlistModel = require("../models/hosts");
+const visitors=require("../models/vistor")
+
 
 let saveHostsbyOwnerId = async (req, res) => {
   var ownerId = req.params.id;
@@ -81,6 +83,21 @@ let patchHostById = async (req, res) => {
   }
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = {
   saveHostsbyOwnerId,
   getAllhosts,
@@ -88,4 +105,5 @@ module.exports = {
   patchHostById,
   getHostById,
   getHostByOwnerId,
-};
+
+}

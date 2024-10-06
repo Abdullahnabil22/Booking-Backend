@@ -134,6 +134,11 @@ let HostSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  visitors: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Visitor'
+  }]
+
 });
 
 module.exports = mongoose.model("host", HostSchema);
