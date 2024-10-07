@@ -4,8 +4,6 @@ const Apartment = require("../models/apartments");
 const Host = require("../models/hosts");
 const router = require("express").Router();
 
-
-
 router.get("/:ownerId", async (req, res) => {
   try {
     const ownerId = req.params.ownerId;
