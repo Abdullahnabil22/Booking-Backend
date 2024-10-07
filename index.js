@@ -19,6 +19,7 @@ var usersRouter = require("./routes/user");
 const messageRoutes = require("./controllers/message");
 const cloudinaryRouter = require("./Services/cloudinary").router;
 const earningRouter = require("./controllers/earning");
+const visitorRouter = require("./controllers/visitors");
 app.use(
   cors({
     origin: "*",
@@ -39,6 +40,7 @@ app.use("/user", usersRouter);
 app.use("/cloudinary", cloudinaryRouter);
 app.use("/paypal", paypalRouter);
 app.use("/earnings", earningRouter);
+app.use("/visitor", visitorRouter);
 app.use("/", (req, res) => {
   res.status(200).json("hello");
 });
