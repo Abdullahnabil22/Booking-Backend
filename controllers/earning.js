@@ -53,7 +53,7 @@ router.get("/:ownerId", async (req, res) => {
     } catch (error) {
       console.error("Error during host bookings aggregation:", error);
     }
-
+    console.log(hostBookings);
     const apartmentBookings = await Booking.aggregate([
       {
         $match: {

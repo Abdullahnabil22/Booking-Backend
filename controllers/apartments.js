@@ -24,7 +24,7 @@ let getApartmentById = async (req, res) => {
 
 let getApartmentByHostId = async (req, res) => {
   try {
-    const apartment = await ApartmentModel.findOne({ hostId: req.params.id });
+    const apartment = await ApartmentModel.findOne({ ownerId: req.params.id });
     if (apartment == null) {
       return res.status(404).json({ message: "Cannot find apartment" });
     }
