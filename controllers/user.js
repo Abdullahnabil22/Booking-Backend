@@ -23,18 +23,36 @@ getuserById = async (req, res) => {
     res.status(400).json({ massage: err.message });
   }
 };
+/////////////////////////// register 
 
 let postUser = async (req, res) => {
   var newdata = req.body;
-  try {
-    let user = await userModell.create(newdata);
+  var email= req.body.email
+  loginuserName = await userModell.findOne({ email: email });
+  if (loginuserName){
+    return res.status(302).json({ 
+      message: "User already exists", 
+      redirect: "/login" 
+    });
 
-    console.log(user);
-    res.status(200).json(user);
-  } catch (err) {
-    res.status(500).json(err.message);
   }
+  else{
+    try {
+      let user = await userModell.create(newdata);
+  
+      console.log(user);
+      res.status(200).json(user);
+    } catch (err) {
+      res.status(500).json(err.message);
+    }
+
+  }
+ 
 };
+
+
+
+//////////////////////// sign in 
 let login = async (req, res) => {
   var email = req.body.email;
   var password = req.body.password;

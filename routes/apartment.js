@@ -34,7 +34,7 @@ router.post(
   // restrictTo("admin", "owner"),
   createApartmentByOwnerId
 );
-router.patch("/:id", auth, restrictTo("admin", "owner"), updateApartment);
-router.delete("/:id", auth, restrictTo("admin", "owner"), deleteApartment);
+router.patch("/:id",  updateApartment);
+router.delete("/:id",  deleteApartment);
 
 module.exports = router;
