@@ -27,12 +27,7 @@ router.get(
 
 router.post("/hotel/:id", createRoomTypeByHotelId);
 
-router.get(
-  "/host/:id",
-  auth,
-  restrictTo("admin", "user", "owner"),
-  getRoomTypeByHostId
-);
+router.get("/hotel/:id", getRoomTypeByHostId);
 
 router.get(
   "/apartment/:id",

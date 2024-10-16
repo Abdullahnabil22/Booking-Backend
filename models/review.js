@@ -1,55 +1,43 @@
 const mongoose = require("mongoose");
 
-const reviewSchema = new mongoose.Schema(
-  {
-    user_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "User",
-    },
-    hotel_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Hotel",
-    },
-    apartment_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      required: true,
-      ref: "Apartment",
-    },
-    rating: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 10,
-    },
-    comment: {
-      en: {
-        type: String,
-        required: true,
-      },
-      ar: {
-        type: String,
-        required: true,
-      },
-    },
-    replies: {
-      type: Array,
-      required: false,
-      default: [],
-    },
-    timestamps: {
-      createdAt: {
-        type: Date,
-        default: Date.now,
-      },
-      updatedAt: {
-        type: Date,
-        default: Date.now,
-      },
-    },
+const reviewSchema = new mongoose.Schema({
+  rating: Number,
+  comment: {
+    en: String,
+    ar: String,
   },
-  { Collection: "review" }
-);
+  replies: [
+    {
+      from: String,
+      message: String,
+    },
+  ],
+  categories: {
+    Staff: Number,
+    Location: Number,
+    Facilities: Number,
+    Services: Number,
+    Comfort: Number,
+    Cleanliness: Number,
+    View: Number,
+    Food: Number,
+    Price: Number,
+    Room: Number,
+  },
+  hotelId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "hosts",
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  apartmentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Apartment",
+  },
+});
 
-module.exports = mongoose.model("Review", reviewSchema);
+let Review = mongoose.model("Review", reviewSchema);
+
+module.exports = Review;

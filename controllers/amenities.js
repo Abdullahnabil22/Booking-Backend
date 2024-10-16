@@ -31,6 +31,15 @@ let createAmenity = async (req, res) => {
   }
 };
 
+let getAmenityByHotelId = async (req, res) => {
+  try {
+    const amenities = await Amenities.find({ hotelId: req.params.id });
+    res.status(200).json(amenities);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 let createAmenityByHotelId = async (req, res) => {
   try {
     let hotelId = req.params.id;
@@ -75,4 +84,5 @@ module.exports = {
   updateAmenity,
   deleteAmenity,
   createAmenityByHotelId,
+  getAmenityByHotelId,
 };

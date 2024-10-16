@@ -3,7 +3,9 @@ const Review = require("../models/review");
 // Route to get all reviews for a specific hotel
 let hostReviews = async (req, res) => {
   try {
-    const reviews = await Review.find({ hotel_id: req.params.id });
+    const reviews = await Review.find({ hotelId: req.params.id }).populate(
+      "userId"
+    );
     res.json(reviews);
   } catch (err) {
     res.status(500).json({ message: err.message });

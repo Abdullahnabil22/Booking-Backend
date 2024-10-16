@@ -47,7 +47,7 @@ exports.getRoomTypeById = async (req, res) => {
 // GET BY host ID
 exports.getRoomTypeByHostId = async (req, res) => {
   try {
-    const roomType = await RoomType.find({ host_id: req.params.id });
+    const roomType = await RoomType.find({ hotelID: req.params.id });
     res.status(200).json(roomType);
   } catch (err) {
     res.status(500).json(err);

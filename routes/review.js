@@ -10,19 +10,9 @@ let {
 } = require("../controllers/review");
 const { auth, restrictTo } = require("../middlewares/auth");
 
-router.get(
-  "/hotel/:id",
-  auth,
-  restrictTo("admin", "user", "owner"),
-  hostReviews
-);
+router.get("/hotel/:id", hostReviews);
 
-router.get(
-  "/user/:id",
-  // auth,
-  // restrictTo("admin", "user", "owner"),
-  userReviews
-);
+router.get("/user/:id", userReviews);
 
 router.get(
   "/apartment/:id",
