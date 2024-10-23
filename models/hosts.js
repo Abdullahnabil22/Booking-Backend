@@ -140,4 +140,6 @@ let HostSchema = mongoose.Schema(
   { collection: "hosts" }
 );
 
-module.exports = mongoose.model("host", HostSchema);
+const Host = mongoose.model("Host", HostSchema);
+
+module.exports = Host;

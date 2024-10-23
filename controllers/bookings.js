@@ -2,10 +2,18 @@ const Booking = require("../models/bookings");
 
 exports.createBooking = async (req, res) => {
   try {
-    const booking = new Booking(req.body);
+    const bookingData = req.body;
+    const commissionRate = bookingData.commission?.rate || 0.05;
+    bookingData.commission = {
+      rate: commissionRate,
+      amount: Number(Math.round(bookingData?.payment?.amount * commissionRate)),
+    };
+    console.log(bookingData.commission.amount);
+    const booking = new Booking(bookingData);
     await booking.save();
     res.status(201).send(booking);
   } catch (error) {
+    console.log(error);
     res.status(400).send(error);
   }
 };
@@ -51,9 +59,19 @@ exports.getBookings = async (req, res) => {
 
 exports.updateBooking = async (req, res) => {
   try {
+    const bookingData = req.body;
+
+    if (bookingData.payment?.amount) {
+      const commissionRate = bookingData.commission?.rate || 0.05;
+      bookingData.commission = {
+        rate: commissionRate,
+        amount: bookingData.payment.amount * commissionRate,
+      };
+    }
+
     const updatedBooking = await Booking.findByIdAndUpdate(
       req.params.id,
-      { $set: req.body },
+      { $set: bookingData },
       { new: true }
     );
     res.status(200).json(updatedBooking);

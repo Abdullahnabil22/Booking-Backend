@@ -20,6 +20,8 @@ const messageRoutes = require("./controllers/message");
 const cloudinaryRouter = require("./Services/cloudinary").router;
 const earningRouter = require("./controllers/earning");
 const visitorRouter = require("./controllers/visitors");
+const checkAvailabilityHandler = require("./Services/check-availability");
+
 app.use(
   cors({
     origin: "*",
@@ -41,6 +43,7 @@ app.use("/cloudinary", cloudinaryRouter);
 app.use("/paypal", paypalRouter);
 app.use("/earnings", earningRouter);
 app.use("/visitor", visitorRouter);
+app.use("/check-availability", checkAvailabilityHandler);
 app.use("/", (req, res) => {
   res.status(200).json("hello");
 });
