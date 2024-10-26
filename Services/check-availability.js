@@ -8,9 +8,6 @@ module.exports = async function handler(req, res) {
 
   try {
     const { hotelId, checkInDate, checkOutDate } = req.body;
-    console.log(
-      `Checking availability for dates: ${checkInDate} to ${checkOutDate}`
-    );
 
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
@@ -41,10 +38,6 @@ module.exports = async function handler(req, res) {
           },
         ],
       });
-      console.log(
-        `Overlapping bookings for room type ${roomType._id}:`,
-        overlappingBookings
-      );
 
       const roomsBooked = overlappingBookings.reduce((total, booking) => {
         const roomCount = booking.room_id.filter(
@@ -59,7 +52,7 @@ module.exports = async function handler(req, res) {
       );
       availability[roomType._id] = availableRooms;
     }
-    console.log("Final availability:", availability);
+
     res.status(200).json(availability);
   } catch (error) {
     console.error("Error checking availability:", error);

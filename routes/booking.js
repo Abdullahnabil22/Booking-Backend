@@ -16,7 +16,7 @@ router.post("/", createBooking);
 
 router.patch("/:id", auth, restrictTo("admin", "user"), updateBooking);
 
-router.delete("/:id", auth, restrictTo("admin", "user"), deleteBooking);
+router.delete("/:id", deleteBooking);
 
 router.get(
   "/user/:id",

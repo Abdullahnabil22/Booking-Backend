@@ -1,4 +1,5 @@
 const Booking = require("../models/bookings");
+const mongoose = require("mongoose");
 
 exports.createBooking = async (req, res) => {
   try {
@@ -20,10 +21,27 @@ exports.createBooking = async (req, res) => {
 
 exports.getBookingByUserId = async (req, res) => {
   try {
-    const bookings = await Booking.find({ userId: req.params.id });
+    const userId = req.params.id;
+
+    // Validate if the userId is a valid ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
+
+    const bookings = await Booking.find({ userID: userId }).populate("userID");
+
+    if (bookings.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No bookings found for this user" });
+    }
+
     res.status(200).json(bookings);
   } catch (err) {
-    res.status(500).json(err);
+    console.error("Error in getBookingByUserId:", err);
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
   }
 };
 
