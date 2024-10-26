@@ -3,6 +3,10 @@ let userModell = require("../models/user");
 // let {user}= require('../modele/user')
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const sendEmail =require("../utils/user");
+const crypto = require('crypto');
+const JWT_SECRET = process.env.SECRET 
+
 
 getAllUser = async (req, res) => {
   try {
@@ -23,55 +27,61 @@ getuserById = async (req, res) => {
     res.status(400).json({ massage: err.message });
   }
 };
-/////////////////////////// register 
 
 let postUser = async (req, res) => {
-  var newdata = req.body;
-  var email= req.body.email
-  loginuserName = await userModell.findOne({ email: email });
-  if (loginuserName){
-    return res.status(302).json({ 
-      message: "User already exists", 
-      redirect: "/login" 
-    });
+  var newdata = req.body; // Get the data from the request body
+  console.log(newdata);
 
-  }
-  else{
-    try {
-      let user = await userModell.create(newdata);
+  try {
   
-      console.log(user);
-      res.status(200).json(user);
-    } catch (err) {
-      res.status(500).json(err.message);
-    }
+    let user = await userModell.create(newdata);
+    console.log("User created:", user);
 
+    var token = jwt.sign(
+      {
+        email: user.email, 
+        id: user._id,
+        role: user.role, 
+       
+        username: user.userName, 
+      },
+      process.env.SECRET,
+    );
+
+    res.status(201).send({ token });
+
+  } catch (err) {
+    console.error("Error registering user:", err);
+    res.status(500).json({ error: err.message });
   }
- 
 };
 
-
-
-//////////////////////// sign in 
-let login = async (req, res) => {
+ login= async (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
-  if (!email || !password) {
+  console.log("password",password);
+  
+
+  if (!email ) {
     return res.json("please enter email and password");
   } else {
     var loginuserName = await userModell.findOne({ email: email });
     if (!loginuserName) {
-      return res.status(404).json("please enter valid email or password");
+      return res.json("please enter valid email or password");
     }
 
     let passwordvaliad = await bcryptjs.compare(
       password,
       loginuserName.password
     );
+    console.log
+    
     if (!passwordvaliad) {
-      return res.status(404).json("please enter valid email or password");
+      console.log("passwordvaliad",passwordvaliad)
+      return res.json("please enter valid or password");
     }
   }
+
   console.log(process.env.SECRET);
   var token = jwt.sign(
     {
@@ -82,10 +92,30 @@ let login = async (req, res) => {
     },
     process.env.SECRET
   );
-  res.status(200).send(token);
+  res.send(token);
 };
 
-let updatePassword = async (req, res) => {
+
+
+
+
+// Define the function first
+const checkemail = async (req, res) => {
+  var email = req.body.email;
+  if (!email) {
+    return res.json("please enter email");
+  } else {
+    var loginuserName = await userModell.findOne({ email: email });
+    if (!loginuserName) {
+      return res.json("please enter valid email");
+    } else {
+      return res.json("Done");
+    }
+  }
+};
+
+
+ updatePassword = async (req, res) => {
   var { currentPassword, newPassword } = req.body;
   if (!currentPassword || !newPassword) {
     return res.send("invalid currentPassword or newPassword");
@@ -101,7 +131,6 @@ let updatePassword = async (req, res) => {
     newPassword
   );
   if (!updateuserr) {
-    // Check if update was successful
     return res.status(404).json({ message: "User not found" });
   }
   user.password = newPassword;
@@ -109,10 +138,129 @@ let updatePassword = async (req, res) => {
   res.send("password updated successfully");
 };
 
+
+
+
+
+//////////////// forgetPassword
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  
+  
+  const user = await userModell.findOne({ email });
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+  
+  const resetToken = user.createResetPasswordToken();
+  await user.save();
+  
+  const resetUrl = `http://localhost:3001/Register/${resetToken}`;  // Frontend link
+  console.log("resetToken",resetToken)
+
+  const message = `
+    <p>We have received a password reset request. Please click the button below to reset your password. The link will be valid for only 15 minutes:</p>
+    <a href="${resetUrl}" style="display:inline-block; padding:10px 15px; color:white; background-color:#007bff; border-radius:5px; text-decoration:none;">Reset Password</a>
+    <p>If the button doesn't work, copy and paste the link below into your browser:</p>
+    <p><a href="${resetUrl}">${resetUrl}</a></p>
+  `;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Password Reset Request',
+      html: message,
+    });
+    return res.status(200).json({ message: "Email sent successfully" });
+  } catch (err) {
+    // Clear the reset token and expiration time if email sending fails
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+    
+    console.error("Email sending error:", err);
+    return res.status(500).json({ message: "There was an error sending the email. Try again later." });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  console.log("resetPassword");
+  console.log(req.params.token);
+
+  try {
+    const token = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    console.log("Token:", token);
+
+    const user = await userModell.findOne({
+      passwordResetToken: token,
+      passwordResetExpires: { $gt: Date.now() }
+    });
+
+    console.log("User:", user);
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    const { password, confirmPassword } = req.body;
+
+    if (password !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    user.password = password; 
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+
+    await user.save(); 
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    return res.status(500).json({ message: "An error occurred while resetting the password" });
+  }
+};
+////////////////////////////////login-with-token
+
+const verifyToken = (token) => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return reject(err);
+      }
+      resolve(decoded);
+    });
+  });
+};
+
+
+const loginWithToken = async (req, res) => {
+  const { token } = req.body;
+  console.log("Received token:", token); 
+
+  if (!token) {
+    return res.status(400).json({ message: 'Token is required' });
+  }
+
+  try {
+    const decoded = await verifyToken(token);
+    console.log("Decoded token:", decoded);
+    res.status(200).json({ message: 'Login successful', user: decoded });
+  } catch (error) {
+    console.error("Token verification failed:", error)
+    res.status(401).json({ message: 'Invalid token', error: error.message })
+  }
+};
+
+
+
 module.exports = {
   postUser,
   updatePassword,
   login,
   getAllUser,
   getuserById,
+  forgotPassword,
+  resetPassword,
+  checkemail,
+  loginWithToken
 };
