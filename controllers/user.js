@@ -98,7 +98,13 @@ let postUser = async (req, res) => {
 const UpdateData = async (req, res) => {
   console.log("Request body:", req.body);
   
-  const update = req.body.updatedData; 
+  const update = req.body; 
+  console.log("update",update)
+
+  // تحقق من وجود update
+  if (!update) {
+    return res.status(400).json("No data provided for update");
+  }
 
   let user = await userModell.findById(req.params.id);
   if (!user) {
@@ -110,7 +116,6 @@ const UpdateData = async (req, res) => {
   user.lastName = update.lastName !== undefined ? update.lastName : user.lastName; 
   user.email = update.email !== undefined ? update.email : user.email;
   user.phoneNumber = update.phoneNumber !== undefined ? update.phoneNumber : user.phoneNumber;
- 
   user.nationality = update.nationality !== undefined ? update.nationality : user.nationality;
  
   try {
@@ -122,7 +127,6 @@ const UpdateData = async (req, res) => {
     return res.status(500).json("Error updating user");
   }
 };
-
 // Define the function first
 const checkemail = async (req, res) => {
   var email = req.body.email;
