@@ -94,10 +94,34 @@ let postUser = async (req, res) => {
   );
   res.send(token);
 };
+//////////////// update user
+const UpdateData = async (req, res) => {
+  console.log("Request body:", req.body);
+  
+  const update = req.body.updatedData; 
 
+  let user = await userModell.findById(req.params.id);
+  if (!user) {
+    return res.status(404).json("User not found");
+  }
 
-
-
+  user.userName = update.userName !== undefined ? update.userName : user.userName; 
+  user.firstName = update.firstName !== undefined ? update.firstName : user.firstName;
+  user.lastName = update.lastName !== undefined ? update.lastName : user.lastName; 
+  user.email = update.email !== undefined ? update.email : user.email;
+  user.phoneNumber = update.phoneNumber !== undefined ? update.phoneNumber : user.phoneNumber;
+ 
+  user.nationality = update.nationality !== undefined ? update.nationality : user.nationality;
+ 
+  try {
+    await user.save();
+    console.log("user updated", user); 
+    return res.status(200).json("User updated successfully");
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return res.status(500).json("Error updating user");
+  }
+};
 
 // Define the function first
 const checkemail = async (req, res) => {
@@ -262,5 +286,6 @@ module.exports = {
   forgotPassword,
   resetPassword,
   checkemail,
-  loginWithToken
+  loginWithToken,
+  UpdateData
 };
