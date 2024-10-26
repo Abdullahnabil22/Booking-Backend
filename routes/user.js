@@ -11,9 +11,10 @@ const {
   forgotPassword,
   resetPassword,
   checkemail,
-  loginWithToken
+  loginWithToken,
+  UpdateData
 } = require("../controllers/user");
-const { auth, restrictTo } = require("../middlewares/auth");
+const { auth,authenticate, restrictTo } = require("../middlewares/auth");
 
 router.post("/", postUser);
 router.get(
@@ -34,6 +35,7 @@ router.post("/checkemail", checkemail);
 router.post("/dashboardLogin", auth, login);
 router.post("/forgotPassword", forgotPassword);
 router.patch("/resetPassword/:token", resetPassword);
+router.patch("/UpdateData/:id",UpdateData)
 router.patch(
   "/updatePassword",
   auth,
