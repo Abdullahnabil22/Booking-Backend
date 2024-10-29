@@ -1,5 +1,8 @@
 const mongoose = require("mongoose");
 const RoomType = require("./roomTypes");
+const BookingFinancials = require("./bookingFinancials");
+const Host = require("./hosts");
+const OwnerBalance = require("./ownerBalance");
 
 const BookingSchema = new mongoose.Schema(
   {
@@ -26,6 +29,7 @@ const BookingSchema = new mongoose.Schema(
     payment: {
       status: {
         type: String,
+        default: "CONFIRMED",
       },
       date: {
         type: Date,
@@ -68,11 +72,72 @@ const BookingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      default: "PENDING",
+      default: "CONFIRMED",
     },
   },
   { timestamps: true }
 );
+
+BookingSchema.post("save", async function (doc, next) {
+  try {
+    const existingFinancials = await BookingFinancials.findOne({
+      booking_id: doc._id,
+    });
+
+    if (existingFinancials) {
+      return next();
+    }
+
+    console.log("Creating new BookingFinancials for booking:", doc._id);
+
+    const totalAmount = doc.payment.amount;
+    const websiteCommission = doc.commission.amount || totalAmount * 0.05;
+    const amountAfterPaypalCommission = totalAmount - totalAmount * 0.029 - 0.3;
+    const hostPayout = amountAfterPaypalCommission - websiteCommission;
+
+    const host = await Host.findById(doc.host_id);
+    if (!host) {
+      throw new Error("Host not found for booking: " + doc._id);
+    }
+
+    const bookingFinancials = new BookingFinancials({
+      booking_id: doc._id,
+      total_amount: totalAmount,
+      amount_after_paypal_commission: amountAfterPaypalCommission,
+      website_commission: websiteCommission,
+      host_payout: hostPayout,
+      host_id: doc.host_id,
+      owner_id: host.ownerId,
+      payout_status: "UNPAID",
+      payout_request: null,
+    });
+
+    await bookingFinancials.save();
+
+    const updatedOwnerBalance = await OwnerBalance.findOneAndUpdate(
+      { owner_id: host.ownerId },
+      {
+        $inc: {
+          current_balance: hostPayout,
+          total_earned: hostPayout,
+        },
+      },
+      { upsert: true, new: true }
+    );
+    console.log(
+      "Owner balance updated for booking:",
+      Host.ownerId,
+      doc._id,
+      "New balance:",
+      updatedOwnerBalance
+    );
+
+    next();
+  } catch (error) {
+    console.error("Error in post-save hook for booking:", doc._id, error);
+    next(error);
+  }
+});
 
 const Booking = mongoose.model("Booking", BookingSchema);
 
@@ -103,7 +168,7 @@ async function updateRoomAvailability() {
 
           const currentBookings = await Booking.find({
             room_id: { $elemMatch: { $in: booking.room_id } },
-            status: { $nin: ["COMPLETED", "CANCELLED", "PENDING"] },
+            status: { $nin: ["COMPLETED", "CANCELLED"] },
             check_out_date: { $gt: new Date() },
           });
 
@@ -148,10 +213,9 @@ BookingSchema.pre("save", async function (next) {
         throw new Error(`Room type ${roomTypeId} not found`);
       }
 
-      // Find overlapping bookings
       const overlappingBookings = await Booking.find({
         room_id: { $elemMatch: { $in: roomIds } },
-        status: { $nin: ["CANCELLED", "COMPLETED", "PENDING"] },
+        status: { $nin: ["CANCELLED", "COMPLETED"] },
         $or: [
           {
             check_in_date: { $lte: booking.check_out_date },

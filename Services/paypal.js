@@ -3,6 +3,7 @@ const router = require("express").Router();
 const Booking = require("../models/bookings");
 const Host = require("../models/hosts");
 const mongoose = require("mongoose");
+const PayoutRequest = require("../models/payoutRequest");
 
 async function generateAccessToken() {
   try {
@@ -125,57 +126,6 @@ exports.createOrder = async (bookingId) => {
   }
 };
 
-async function payHost(booking) {
-  try {
-    const hostAmount = booking.payment.amount - booking.commission.amount;
-
-    const accessToken = await generateAccessToken();
-
-    const payoutData = {
-      sender_batch_header: {
-        sender_batch_id: `HOST_PAYOUT_${booking._id}`,
-        email_subject: "You have a payout!",
-        email_message: "You have received a payout for your recent booking.",
-      },
-      items: [
-        {
-          recipient_type: "EMAIL",
-          amount: {
-            value: hostAmount.toFixed(2),
-            currency: booking.payment.coin,
-          },
-          sender_item_id: `PAYOUT_${booking._id}`,
-          recipient_wallet: "PAYPAL",
-          receiver: "sb-ddq5d31340110_api1.business.example.com",
-          note: `Payout for booking ${booking._id}`,
-        },
-      ],
-    };
-
-    const response = await axios({
-      method: "POST",
-      url: `${process.env.PAYPAL_URL}/v1/payments/payouts`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      data: payoutData,
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error("Error paying host:", error);
-    if (error.response) {
-      console.error(
-        "PayPal API error response:",
-        error.response.status,
-        JSON.stringify(error.response.data, null, 2)
-      );
-    }
-    throw new Error(`Failed to process host payout: ${error.message}`);
-  }
-}
-
 exports.capturePayment = async (paymentId, bookingId) => {
   try {
     const accessToken = await generateAccessToken();
@@ -211,17 +161,6 @@ exports.capturePayment = async (paymentId, bookingId) => {
       booking.payment.payment_id = paymentId;
 
       await booking.save();
-
-      try {
-        await payHost(booking);
-      } catch (payoutError) {
-        console.error(
-          `Failed to process host payout for booking ${bookingId}:`,
-          payoutError
-        );
-        booking.payoutStatus = "FAILED";
-        await booking.save();
-      }
     }
 
     return response.data;
@@ -230,6 +169,114 @@ exports.capturePayment = async (paymentId, bookingId) => {
     throw new Error("Failed to capture payment: " + error.message);
   }
 };
+
+exports.createPayout = async (amount, paypalEmail, payoutRequestId) => {
+  try {
+    const accessToken = await generateAccessToken();
+
+    const payoutData = {
+      sender_batch_header: {
+        sender_batch_id: `Payout_${Date.now()}`,
+        email_subject: "You have a payout!",
+        email_message: "You have received a payout payment",
+      },
+      items: [
+        {
+          recipient_type: "EMAIL",
+          amount: {
+            value: amount.toFixed(2),
+            currency: "USD",
+          },
+          receiver: paypalEmail,
+          note: "Thank you for your service",
+          sender_item_id: payoutRequestId,
+        },
+      ],
+    };
+
+    const response = await axios({
+      url: `${process.env.PAYPAL_URL}/v1/payments/payouts`,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      data: JSON.stringify(payoutData),
+    });
+
+    // Update payout request status
+    const payoutRequest = await PayoutRequest.findById(payoutRequestId);
+    if (payoutRequest) {
+      payoutRequest.status = "IN_PROGRESS";
+      payoutRequest.payout_batch_id =
+        response.data.batch_header.payout_batch_id;
+      await payoutRequest.save();
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error("Error creating payout:", error);
+    if (error.response?.data) {
+      console.error("PayPal API Error Details:", error.response.data);
+    }
+    throw new Error(`Failed to create payout: ${error.message}`);
+  }
+};
+
+exports.getPayoutStatus = async (payoutBatchId) => {
+  try {
+    const accessToken = await generateAccessToken();
+
+    const response = await axios({
+      url: `${process.env.PAYPAL_URL}/v1/payments/payouts/${payoutBatchId}`,
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Error getting payout status:", error);
+    if (error.response?.data) {
+      console.error("PayPal API Error Details:", error.response.data);
+    }
+    throw new Error(`Failed to get payout status: ${error.message}`);
+  }
+};
+
+router.post("/payout", async (req, res) => {
+  try {
+    const { amount, paypalEmail, payoutRequestId } = req.body;
+    const response = await exports.createPayout(
+      amount,
+      paypalEmail,
+      payoutRequestId
+    );
+    res.json(response);
+  } catch (error) {
+    console.error("Error processing payout:", error);
+    res.status(500).json({
+      message: "Failed to create payout",
+      error: error.message,
+    });
+  }
+});
+
+router.get("/payout-status/:batchId", async (req, res) => {
+  try {
+    const { batchId } = req.params;
+    const response = await exports.getPayoutStatus(batchId);
+    res.json(response);
+  } catch (error) {
+    console.error("Error getting payout status:", error);
+    res.status(500).json({
+      message: "Failed to get payout status",
+      error: error.message,
+    });
+  }
+});
 
 router.post("/pay", async (req, res) => {
   try {
@@ -269,6 +316,8 @@ module.exports = {
   paypal: {
     createOrder: exports.createOrder,
     capturePayment: exports.capturePayment,
+    createPayout: exports.createPayout,
+    getPayoutStatus: exports.getPayoutStatus,
   },
   router,
 };

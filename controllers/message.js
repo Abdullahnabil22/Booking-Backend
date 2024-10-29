@@ -22,7 +22,7 @@ router.get("/:ownerId", async (req, res) => {
       { path: "receiver" },
       {
         path: "hostId",
-        model: "host",
+        model: "Host",
         strictPopulate: false,
       },
       { path: "apartmentId" },

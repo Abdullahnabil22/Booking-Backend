@@ -4,15 +4,18 @@ const mongoose = require("mongoose");
 exports.createBooking = async (req, res) => {
   try {
     const bookingData = req.body;
+    bookingData.payment.status = "CONFIRMED";
+    bookingData.status = "CONFIRMED";
     const commissionRate = bookingData.commission?.rate || 0.05;
     bookingData.commission = {
       rate: commissionRate,
       amount: Number(Math.round(bookingData?.payment?.amount * commissionRate)),
     };
-    console.log(bookingData.commission.amount);
     const booking = new Booking(bookingData);
     await booking.save();
-    res.status(201).send(booking);
+    res
+      .status(201)
+      .json({ id: booking._id, message: "Booking created successfully" });
   } catch (error) {
     console.log(error);
     res.status(400).send(error);

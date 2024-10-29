@@ -8,31 +8,35 @@ router.get("/:ownerId", async (req, res) => {
   try {
     const ownerId = req.params.ownerId;
     const hosts = await Host.find({ ownerId });
-    if (!hosts || hosts.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No hosts found for this owner." });
-    }
     const apartments = await Apartment.find({ ownerId });
-    if (!apartments || apartments.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No apartments found for this owner." });
-    }
-    const hostBookingsCount = await Booking.countDocuments({
-      host_id: { $in: hosts.map((h) => h._id.toString()) },
-    });
-    const apartmentBookingsCount = await Booking.countDocuments({
-      apartment_id: { $in: apartments.map((a) => a._id.toString()) },
-    });
 
     let hostBookings = [];
+    let apartmentBookings = [];
 
-    try {
+    console.log(
+      "Host IDs:",
+      hosts.map((h) => h._id)
+    );
+    console.log("Found bookings:", hostBookings);
+
+    if (hosts && hosts.length > 0) {
+      // Add a test query to check for any bookings
+      const testBooking = await Booking.findOne({});
+      console.log("Sample booking from DB:", testBooking);
+
+      // Check the actual host_id format in the bookings collection
+      if (testBooking) {
+        console.log("Sample booking host_id type:", typeof testBooking.host_id);
+        console.log("Sample booking host_id:", testBooking.host_id);
+      }
+
+      const hostIds = hosts.map((h) => h._id);
+      console.log("Looking for bookings with host_ids:", hostIds);
+
       hostBookings = await Booking.aggregate([
         {
           $match: {
-            host_id: { $in: hosts.map((h) => h._id.toString()) },
+            host_id: { $in: hostIds },
           },
         },
         {
@@ -40,7 +44,40 @@ router.get("/:ownerId", async (req, res) => {
             _id: {
               $dateToString: {
                 format: "%Y-%m",
-                date: { $toDate: "$booking_date" },
+                date: { $toDate: "$check_in_date" },
+                timezone: "UTC",
+              },
+            },
+            totalEarnings: { $sum: "$payment.amount" },
+            totalMembers: { $sum: "$members" },
+            bookings: { $push: { id: "$_id", host_id: "$host_id" } },
+          },
+        },
+        { $sort: { _id: 1 } },
+      ]);
+
+      console.log("Aggregate query result:", hostBookings);
+    }
+
+    if (apartments && apartments.length > 0) {
+      const apartmentBookingsCount = await Booking.countDocuments({
+        apartment_id: { $in: apartments.map((a) => a._id.toString()) },
+      });
+
+      apartmentBookings = await Booking.aggregate([
+        {
+          $match: {
+            apartment_id: {
+              $in: apartments.map((a) => a._id.toString()),
+            },
+          },
+        },
+        {
+          $group: {
+            _id: {
+              $dateToString: {
+                format: "%Y-%m",
+                date: { $toDate: "$check_in_date" },
                 timezone: "UTC",
               },
             },
@@ -50,43 +87,18 @@ router.get("/:ownerId", async (req, res) => {
         },
         { $sort: { _id: 1 } },
       ]);
-    } catch (error) {
-      console.error("Error during host bookings aggregation:", error);
-    }
-    console.log(hostBookings);
-    const apartmentBookings = await Booking.aggregate([
-      {
-        $match: {
-          apartment_id: {
-            $in: apartments.map((a) => a._id.toString()),
-          },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            $dateToString: {
-              format: "%Y-%m",
-              date: { $toDate: "$booking_date" },
-              timezone: "UTC",
-            },
-          },
-          totalEarnings: { $sum: "$payment.amount" },
-          totalMembers: { $sum: "$members" },
-        },
-      },
-      { $sort: { _id: 1 } },
-    ]);
-    if (hostBookings.length === 0 && apartmentBookings.length === 0) {
-      const simpleHostBookings = await Booking.find({
-        host_id: { $in: hosts.map((h) => h._id.toString()) },
-      }).lean();
-      const simpleApartmentBookings = await Booking.find({
-        apartment_id: { $in: apartments.map((a) => a._id.toString()) },
-      }).lean();
     }
 
-    res.json({ apartmentBookings, hostBookings });
+    // ... existing code for simple bookings if both are empty ...
+
+    res.status(200).json({
+      hostBookings,
+      apartmentBookings,
+      message:
+        hosts.length === 0 && apartments.length === 0
+          ? "No hosts or apartments found for this owner."
+          : undefined,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

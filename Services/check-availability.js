@@ -18,7 +18,7 @@ module.exports = async function handler(req, res) {
     }
 
     const roomTypes = await RoomType.find({ hotelID: hotelId });
-    console.log(roomTypes);
+
     const availability = {};
 
     for (const roomType of roomTypes) {
