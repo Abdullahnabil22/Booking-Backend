@@ -29,13 +29,36 @@ let apartmentReviews = async (req, res) => {
   }
 };
 // Route to post a new review
+// let newReview = async (req, res) => {
+//   try {
+//     const review = new Review(req.body);
+//     const newReview = await review.save();
+//     res.status(201).json(newReview);
+//   } catch (err) {
+//     res.status(400).json({ message: err.message });
+//   }
+// };
+
+
+
+
+
 let newReview = async (req, res) => {
+  const { reviewId } = req.params;
+  const { message } = req.body;
+
   try {
-    const review = new Review(req.body);
-    const newReview = await review.save();
-    res.status(201).json(newReview);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
+    const review = await Review.findById(reviewId);
+    if (!review) {
+      return res.status(404).send("Review not found");
+    }
+
+    review.replies.push({ from: "Hotel Managemen", message }); 
+    await review.save();
+
+    res.status(200).json(review);
+  } catch (error) {
+    res.status(500).send("Server error");
   }
 };
 // Route to update a review

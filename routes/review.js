@@ -21,7 +21,7 @@ router.get(
   apartmentReviews
 );
 
-router.post("/", auth, restrictTo("admin", "user", "owner"), newReview);
+router.post("/:reviewId/replies", newReview);
 
 router.patch("/:id", auth, restrictTo("admin", "user", "owner"), updateReview);
 
