@@ -26,8 +26,8 @@ router.get(
 );
 router.get(
   "/host/:id",
-  auth,
-  restrictTo("admin", "user", "owner"),
+  // auth,
+  // restrictTo("admin", "user", "owner"),
   getBookingByHostId
 );
 router.get(
