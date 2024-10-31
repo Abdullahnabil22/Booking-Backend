@@ -3,10 +3,9 @@ let userModell = require("../models/user");
 // let {user}= require('../modele/user')
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const sendEmail =require("../utils/user");
-const crypto = require('crypto');
-const JWT_SECRET = process.env.SECRET 
-
+const sendEmail = require("../utils/user");
+const crypto = require("crypto");
+const JWT_SECRET = process.env.SECRET;
 
 getAllUser = async (req, res) => {
   try {
@@ -30,39 +29,35 @@ getuserById = async (req, res) => {
 
 let postUser = async (req, res) => {
   var newdata = req.body; // Get the data from the request body
-  console.log(newdata);
 
   try {
-  
     let user = await userModell.create(newdata);
     console.log("User created:", user);
 
     var token = jwt.sign(
       {
-        email: user.email, 
+        email: user.email,
         id: user._id,
-        role: user.role, 
-       
-        username: user.userName, 
+        role: user.role,
+
+        username: user.userName,
       },
-      process.env.SECRET,
+      process.env.SECRET
     );
 
     res.status(201).send({ token });
-
   } catch (err) {
     console.error("Error registering user:", err);
     res.status(500).json({ error: err.message });
   }
 };
 
- login= async (req, res) => {
+login = async (req, res) => {
   var email = req.body.email;
   var password = req.body.password;
-  console.log("password",password);
-  
+  console.log("password", password);
 
-  if (!email ) {
+  if (!email) {
     return res.json("please enter email and password");
   } else {
     var loginuserName = await userModell.findOne({ email: email });
@@ -74,10 +69,10 @@ let postUser = async (req, res) => {
       password,
       loginuserName.password
     );
-    console.log
-    
+    console.log;
+
     if (!passwordvaliad) {
-      console.log("passwordvaliad",passwordvaliad)
+      console.log("passwordvaliad", passwordvaliad);
       return res.json("please enter valid or password");
     }
   }
@@ -97,9 +92,9 @@ let postUser = async (req, res) => {
 //////////////// update user
 const UpdateData = async (req, res) => {
   console.log("Request body:", req.body);
-  
-  const update = req.body; 
-  console.log("update",update)
+
+  const update = req.body;
+  console.log("update", update);
 
   // تحقق من وجود update
   if (!update) {
@@ -111,16 +106,21 @@ const UpdateData = async (req, res) => {
     return res.status(404).json("User not found");
   }
 
-  user.userName = update.userName !== undefined ? update.userName : user.userName; 
-  user.firstName = update.firstName !== undefined ? update.firstName : user.firstName;
-  user.lastName = update.lastName !== undefined ? update.lastName : user.lastName; 
+  user.userName =
+    update.userName !== undefined ? update.userName : user.userName;
+  user.firstName =
+    update.firstName !== undefined ? update.firstName : user.firstName;
+  user.lastName =
+    update.lastName !== undefined ? update.lastName : user.lastName;
   user.email = update.email !== undefined ? update.email : user.email;
-  user.phoneNumber = update.phoneNumber !== undefined ? update.phoneNumber : user.phoneNumber;
-  user.nationality = update.nationality !== undefined ? update.nationality : user.nationality;
- 
+  user.phoneNumber =
+    update.phoneNumber !== undefined ? update.phoneNumber : user.phoneNumber;
+  user.nationality =
+    update.nationality !== undefined ? update.nationality : user.nationality;
+
   try {
     await user.save();
-    console.log("user updated", user); 
+    console.log("user updated", user);
     return res.status(200).json("User updated successfully");
   } catch (error) {
     console.error("Error updating user:", error);
@@ -142,8 +142,7 @@ const checkemail = async (req, res) => {
   }
 };
 
-
- updatePassword = async (req, res) => {
+updatePassword = async (req, res) => {
   var { currentPassword, newPassword } = req.body;
   if (!currentPassword || !newPassword) {
     return res.send("invalid currentPassword or newPassword");
@@ -166,25 +165,20 @@ const checkemail = async (req, res) => {
   res.send("password updated successfully");
 };
 
-
-
-
-
 //////////////// forgetPassword
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
-  
-  
+
   const user = await userModell.findOne({ email });
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  
+
   const resetToken = user.createResetPasswordToken();
   await user.save();
-  
-  const resetUrl = `http://localhost:3001/Register/${resetToken}`;  // Frontend link
-  console.log("resetToken",resetToken)
+
+  const resetUrl = `http://localhost:3001/Register/${resetToken}`; // Frontend link
+  console.log("resetToken", resetToken);
 
   const message = `
     <p>We have received a password reset request. Please click the button below to reset your password. The link will be valid for only 15 minutes:</p>
@@ -196,7 +190,7 @@ const forgotPassword = async (req, res) => {
   try {
     await sendEmail({
       email: user.email,
-      subject: 'Password Reset Request',
+      subject: "Password Reset Request",
       html: message,
     });
     return res.status(200).json({ message: "Email sent successfully" });
@@ -205,9 +199,13 @@ const forgotPassword = async (req, res) => {
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
     await user.save();
-    
+
     console.error("Email sending error:", err);
-    return res.status(500).json({ message: "There was an error sending the email. Try again later." });
+    return res
+      .status(500)
+      .json({
+        message: "There was an error sending the email. Try again later.",
+      });
   }
 };
 
@@ -216,12 +214,15 @@ const resetPassword = async (req, res) => {
   console.log(req.params.token);
 
   try {
-    const token = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    const token = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
     console.log("Token:", token);
 
     const user = await userModell.findOne({
       passwordResetToken: token,
-      passwordResetExpires: { $gt: Date.now() }
+      passwordResetExpires: { $gt: Date.now() },
     });
 
     console.log("User:", user);
@@ -236,15 +237,17 @@ const resetPassword = async (req, res) => {
       return res.status(400).json({ message: "Passwords do not match" });
     }
 
-    user.password = password; 
+    user.password = password;
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;
 
-    await user.save(); 
+    await user.save();
     return res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {
     console.error("Error resetting password:", error);
-    return res.status(500).json({ message: "An error occurred while resetting the password" });
+    return res
+      .status(500)
+      .json({ message: "An error occurred while resetting the password" });
   }
 };
 ////////////////////////////////login-with-token
@@ -260,26 +263,23 @@ const verifyToken = (token) => {
   });
 };
 
-
 const loginWithToken = async (req, res) => {
   const { token } = req.body;
-  console.log("Received token:", token); 
+  console.log("Received token:", token);
 
   if (!token) {
-    return res.status(400).json({ message: 'Token is required' });
+    return res.status(400).json({ message: "Token is required" });
   }
 
   try {
     const decoded = await verifyToken(token);
     console.log("Decoded token:", decoded);
-    res.status(200).json({ message: 'Login successful', user: decoded });
+    res.status(200).json({ message: "Login successful", user: decoded });
   } catch (error) {
-    console.error("Token verification failed:", error)
-    res.status(401).json({ message: 'Invalid token', error: error.message })
+    console.error("Token verification failed:", error);
+    res.status(401).json({ message: "Invalid token", error: error.message });
   }
 };
-
-
 
 module.exports = {
   postUser,
@@ -291,5 +291,5 @@ module.exports = {
   resetPassword,
   checkemail,
   loginWithToken,
-  UpdateData
+  UpdateData,
 };

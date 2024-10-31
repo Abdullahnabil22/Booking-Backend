@@ -15,8 +15,6 @@ router.get("/:ownerId", async (req, res) => {
       $or: [{ sender: ownerId }, { receiver: ownerId }],
     });
 
-    console.log("Before populate:", messages);
-
     const populatedMessages = await Message.populate(messages, [
       { path: "sender" },
       { path: "receiver" },
@@ -28,14 +26,10 @@ router.get("/:ownerId", async (req, res) => {
       { path: "apartmentId" },
     ]);
 
-    console.log("After populate:", populatedMessages);
-
     const hostIds = messages.map((message) => message.hostId);
     const hosts = await Host.find({ _id: { $in: hostIds } });
     const apartmentIds = messages.map((message) => message.apartmentId);
     const apartments = await Apartment.find({ _id: { $in: apartmentIds } });
-    console.log("Found hosts:", hosts);
-    console.log("Found apartments:", apartments);
 
     res.json(populatedMessages);
   } catch (error) {
@@ -61,6 +55,14 @@ router.post("/", async (req, res) => {
     });
 
     const newMessage = await message.save();
+
+    // Import and get Socket.IO instance
+    const { getIO } = require("../Services/Socket.IOService");
+    const io = getIO();
+
+    // Emit the new message event
+    io.emit("new_message", newMessage);
+
     res.status(201).json(newMessage);
   } catch (error) {
     console.error("Error in POST /messages:", error);
@@ -77,6 +79,14 @@ router.patch("/:id/read", async (req, res) => {
 
     message.read = true;
     await message.save();
+
+    // Import and get Socket.IO instance
+    const { getIO } = require("../Services/Socket.IOService");
+    const io = getIO();
+
+    // Emit the message read event
+    io.emit("message_read", message._id);
+
     res.json(message);
   } catch (error) {
     console.error("Error in PATCH /messages/:id/read:", error);

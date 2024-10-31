@@ -7,6 +7,7 @@ let {
   updateReview,
   deleteReview,
   apartmentReviews,
+  hotelReview,
 } = require("../controllers/review");
 const { auth, restrictTo } = require("../middlewares/auth");
 
@@ -21,6 +22,7 @@ router.get(
   apartmentReviews
 );
 
+router.post("/hotel/:id", hotelReview);
 router.post("/", auth, restrictTo("admin", "user", "owner"), newReview);
 
 router.patch("/:id", auth, restrictTo("admin", "user", "owner"), updateReview);

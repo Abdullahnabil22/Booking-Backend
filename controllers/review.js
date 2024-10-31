@@ -28,7 +28,7 @@ let apartmentReviews = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-// Route to post a new review
+
 let newReview = async (req, res) => {
   try {
     const review = new Review(req.body);
@@ -38,7 +38,18 @@ let newReview = async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 };
-// Route to update a review
+// Route to post a review by hotel id
+let hotelReview = async (req, res) => {
+  let hotelId = req.params.id;
+  try {
+    const review = new Review({ ...req.body, hotelId });
+    const newReview = await review.save();
+    res.status(201).json(newReview);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
+};
+
 let updateReview = async (req, res) => {
   try {
     const review = await Review.findById(req.params.id);
@@ -83,4 +94,5 @@ module.exports = {
   updateReview,
   deleteReview,
   apartmentReviews,
+  hotelReview,
 };

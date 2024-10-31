@@ -88,8 +88,6 @@ BookingSchema.post("save", async function (doc, next) {
       return next();
     }
 
-    console.log("Creating new BookingFinancials for booking:", doc._id);
-
     const totalAmount = doc.payment.amount;
     const websiteCommission = doc.commission.amount || totalAmount * 0.05;
     const amountAfterPaypalCommission = totalAmount - totalAmount * 0.029 - 0.3;
@@ -123,13 +121,6 @@ BookingSchema.post("save", async function (doc, next) {
         },
       },
       { upsert: true, new: true }
-    );
-    console.log(
-      "Owner balance updated for booking:",
-      Host.ownerId,
-      doc._id,
-      "New balance:",
-      updatedOwnerBalance
     );
 
     next();

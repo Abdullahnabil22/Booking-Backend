@@ -1,14 +1,14 @@
 const mongoose = require("mongoose");
 const bcryptjs = require("bcryptjs");
-const crypto = require("crypto"); 
+const crypto = require("crypto");
 
 let users = mongoose.Schema(
   {
     userName: {
       type: String,
       // required: [true, "userName is required"],
- unique: false,
-   defualt:"user"
+      unique: false,
+      defualt: "user",
     },
     firstName: {
       type: String,
@@ -43,17 +43,15 @@ let users = mongoose.Schema(
       //   "Password must be at least 8 characters long and contain at least one letter and one number.",
       // ],
     },
-    passwordResetToken:String,
- 
-    passwordResetExpires:Date,
-    
+    passwordResetToken: String,
 
+    passwordResetExpires: Date,
 
     role: {
       type: String,
       // required: [true, "role is required"],
       enum: ["admin", "user", "owner"],
-      defualt:"user"
+      defualt: "user",
     },
     active: {
       type: Boolean,
@@ -62,16 +60,16 @@ let users = mongoose.Schema(
   { timestamps: true }
 );
 users.methods.createResetPasswordToken = function () {
-  const resetToken = crypto.randomBytes(32).toString('hex');
-  
-  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
   this.passwordResetExpires = Date.now() + 15 * 60 * 1000;
-  console.log("hamada")
-  
-  console.log(resetToken, this.passwordResetToken);
-  
+
   return resetToken;
-   }
+};
 users.pre("save", async function (next) {
   if (this.isModified("password")) {
     const salt = await bcryptjs.genSalt(10);

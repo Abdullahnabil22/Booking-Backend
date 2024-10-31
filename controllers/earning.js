@@ -13,25 +13,13 @@ router.get("/:ownerId", async (req, res) => {
     let hostBookings = [];
     let apartmentBookings = [];
 
-    console.log(
-      "Host IDs:",
-      hosts.map((h) => h._id)
-    );
-    console.log("Found bookings:", hostBookings);
-
     if (hosts && hosts.length > 0) {
       // Add a test query to check for any bookings
       const testBooking = await Booking.findOne({});
-      console.log("Sample booking from DB:", testBooking);
 
       // Check the actual host_id format in the bookings collection
-      if (testBooking) {
-        console.log("Sample booking host_id type:", typeof testBooking.host_id);
-        console.log("Sample booking host_id:", testBooking.host_id);
-      }
 
       const hostIds = hosts.map((h) => h._id);
-      console.log("Looking for bookings with host_ids:", hostIds);
 
       hostBookings = await Booking.aggregate([
         {
@@ -55,8 +43,6 @@ router.get("/:ownerId", async (req, res) => {
         },
         { $sort: { _id: 1 } },
       ]);
-
-      console.log("Aggregate query result:", hostBookings);
     }
 
     if (apartments && apartments.length > 0) {

@@ -36,7 +36,6 @@ const createPayoutRequest = async (req, res) => {
           created_at: payoutRequest.createdAt,
         },
       });
-      console.log("Payout notification sent successfully");
     } catch (notificationError) {
       console.error("Error sending WebSocket notification:", notificationError);
     }

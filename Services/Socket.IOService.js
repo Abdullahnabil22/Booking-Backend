@@ -5,7 +5,12 @@ let io;
 const initializeSocket = (server) => {
   io = socketIo(server, {
     cors: {
-      origin: ["http://localhost:54200", "http://localhost:4200"],
+      // Update origins to include your Next.js client
+      origin: [
+        "http://localhost:54200",
+        "http://localhost:4200",
+        "http://localhost:3001",
+      ],
       methods: ["GET", "POST"],
       credentials: true,
     },
@@ -19,6 +24,19 @@ const initializeSocket = (server) => {
     socket.on("payout_request", (data) => {
       console.log("Received payout request:", data);
       io.emit("payout_request", data);
+    });
+
+    // Handle new messages
+    socket.on("new_message", (message) => {
+      console.log("New message received:", message);
+      // Broadcast the message to all connected clients except sender
+      socket.broadcast.emit("new_message", message);
+    });
+
+    // Handle message read status
+    socket.on("message_read", (messageId) => {
+      console.log("Message marked as read:", messageId);
+      socket.broadcast.emit("message_read", messageId);
     });
 
     // Handle disconnection
