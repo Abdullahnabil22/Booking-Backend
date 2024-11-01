@@ -12,7 +12,7 @@ const io = socketService.initializeSocket(server);
 app.use(
   cors({
     origin: [
-      "http://localhost:50335",
+      "http://localhost:61438",
       "http://localhost:4200",
       "http://localhost:3001",
     ],

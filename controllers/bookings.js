@@ -3,6 +3,22 @@ const mongoose = require("mongoose");
 
 exports.createBooking = async (req, res) => {
   try {
+    // Add idempotency check
+    const existingBooking = await Booking.findOne({
+      userID: req.body.userID,
+      room_id: req.body.room_id,
+      check_in_date: req.body.check_in_date,
+      check_out_date: req.body.check_out_date,
+      status: "CONFIRMED",
+    });
+
+    if (existingBooking) {
+      return res.status(409).json({
+        message: "Booking already exists",
+        id: existingBooking._id,
+      });
+    }
+
     const bookingData = req.body;
     bookingData.payment.status = "CONFIRMED";
     bookingData.status = "CONFIRMED";

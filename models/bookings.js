@@ -159,7 +159,7 @@ async function updateRoomAvailability() {
 
           const currentBookings = await Booking.find({
             room_id: { $elemMatch: { $in: booking.room_id } },
-            status: { $nin: ["COMPLETED", "CANCELLED"] },
+            status: { $nin: ["COMPLETED", "CANCELLED", "CONFIRMED"] },
             check_out_date: { $gt: new Date() },
           });
 
@@ -206,7 +206,7 @@ BookingSchema.pre("save", async function (next) {
 
       const overlappingBookings = await Booking.find({
         room_id: { $elemMatch: { $in: roomIds } },
-        status: { $nin: ["CANCELLED", "COMPLETED"] },
+        status: { $nin: ["CANCELLED", "COMPLETED", "CONFIRMED"] },
         $or: [
           {
             check_in_date: { $lte: booking.check_out_date },
