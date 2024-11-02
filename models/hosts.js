@@ -136,6 +136,10 @@ let HostSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   { collection: "hosts" }
 );

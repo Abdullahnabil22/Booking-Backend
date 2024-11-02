@@ -35,9 +35,10 @@ let getHostById = async (req, res) => {
 let getHostByOwnerId = async (req, res) => {
   try {
     const host = await hostlistModel.find({ ownerId: req.params.id });
-    if (host == null) {
+    if (host == null&&host.isDisabled==true) {
       return res.status(404).json({ message: "Cannot find host" });
     }
+ 
     res.status(200).json(host);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -80,6 +81,31 @@ let patchHostById = async (req, res) => {
     res.status(404).json({ massage: err.message });
   }
 };
+// routes/hotels.js
+
+const disable = async (req, res) => {
+  try {
+    const hotelId = req.params.id;
+
+    const updatedHotel = await hostlistModel.findByIdAndUpdate(
+      hotelId,
+      { isDisabled: true },
+      { new: true }
+    );
+
+    if (!updatedHotel) {
+      return res.status(404).json({ message: 'Hotel not found' });
+    }
+
+    res.status(200).json({ message: 'Hotel disabled successfully', hotel: updatedHotel });
+  } catch (error) {
+    console.error('Error disabling hotel:', error.message);
+    res.status(500).json({ message: 'An error occurred while disabling the hotel', error: error.message });
+  }
+}
+
+
+
 
 module.exports = {
   saveHostsbyOwnerId,
@@ -88,4 +114,5 @@ module.exports = {
   patchHostById,
   getHostById,
   getHostByOwnerId,
+  disable
 };
