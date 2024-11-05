@@ -5,11 +5,11 @@ let io;
 const initializeSocket = (server) => {
   io = socketIo(server, {
     cors: {
-     
       origin: [
-        "http://localhost:61438",
+        "http://localhost:4300",
         "http://localhost:4200",
         "http://localhost:3001",
+        "https://booking-hoqp4yd9a-abdullahnabil22s-projects.vercel.app",
       ],
       methods: ["GET", "POST"],
       credentials: true,
@@ -28,11 +28,10 @@ const initializeSocket = (server) => {
 
     socket.on("new_message", (message) => {
       console.log("New message received:", message);
- 
+
       socket.broadcast.emit("new_message", message);
     });
 
-   
     socket.on("message_read", (messageId) => {
       console.log("Message marked as read:", messageId);
       socket.broadcast.emit("message_read", messageId);

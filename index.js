@@ -12,9 +12,10 @@ const io = socketService.initializeSocket(server);
 app.use(
   cors({
     origin: [
-      "http://localhost:61438",
+      "http://localhost:4300",
       "http://localhost:4200",
       "http://localhost:3001",
+      "https://booking-hoqp4yd9a-abdullahnabil22s-projects.vercel.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],

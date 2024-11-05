@@ -84,10 +84,7 @@ exports.getBookingByApartmentId = async (req, res) => {
 
 exports.getBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find()
-      .populate("userId")
-      .populate("hotelId")
-      .populate("roomTypeId");
+    const bookings = await Booking.find();
     res.status(200).json(bookings);
   } catch (err) {
     res.status(500).json(err);

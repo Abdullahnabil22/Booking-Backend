@@ -1,30 +1,35 @@
 const express = require("express");
-const Visitor = require("../models/visitors");
 const router = express.Router();
+const Visitor = require("../models/visitors");
 
-router.get("/", async (req, res) => {
+router.post("/analytics", async (req, res) => {
   try {
-    const visitors = await Visitor.find({});
-    const labels = visitors.map((visitor) => visitor.label);
-    const visitorCounts = visitors.map((visitor) => visitor.visitorCount);
-
-    res.json({ labels, visitors: visitorCounts });
+    const { device, path } = req.body;
+    await Visitor.create({ device, path });
+    console.log("Visitor created:", req.body);
+    res.status(200).json({ success: true });
   } catch (error) {
-    console.error("Error fetching visitors:", error);
-    res.status(500).json({ message: "Internal Server Error" });
+    res.status(500).json({ error: error.message });
   }
 });
 
-router.post("/", async (req, res) => {
-  const { label, visitorCount } = req.body;
-
+// Endpoint to get analytics data
+router.get("/analytics", async (req, res) => {
   try {
-    const newVisitor = new Visitor({ label, visitorCount });
-    await newVisitor.save();
-    res.status(201).json(newVisitor);
+    const visitors = await Visitor.find({}).sort({ timestamp: -1 }).limit(1000);
+
+    const deviceStats = await Visitor.aggregate([
+      {
+        $group: {
+          _id: "$device",
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    res.json({ visitors, deviceStats });
   } catch (error) {
-    console.error("Error adding visitor:", error);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 });
 

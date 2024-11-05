@@ -1,20 +1,18 @@
 const mongoose = require("mongoose");
 
-const visitorSchema = new mongoose.Schema({
-  label: {
+const VisitorSchema = new mongoose.Schema({
+  device: {
     type: String,
     required: true,
   },
-  visitorCount: {
-    type: Number,
+  path: {
+    type: String,
     required: true,
   },
-  createdAt: {
+  timestamp: {
     type: Date,
     default: Date.now,
   },
 });
 
-const Visitor = mongoose.model("Visitor", visitorSchema);
-
-module.exports = Visitor;
+module.exports = mongoose.model("Visitor", VisitorSchema);

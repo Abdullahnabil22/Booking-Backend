@@ -22,15 +22,27 @@ module.exports = async function handler(req, res) {
     const roomTypes = await RoomType.find({ hotelID: hotelId });
     console.log("Found room types:", roomTypes);
 
-    const availability = {};
+    // Initialize availability for all room types first
+    const availability = roomTypes.reduce((acc, roomType) => {
+      acc[roomType._id] = roomType.numberOfRoomsWithThisType;
+      return acc;
+    }, {});
     console.log("Initial availability object:", availability);
 
     for (const roomType of roomTypes) {
       console.log("\nProcessing room type:", roomType);
 
+      console.log("Query parameters:", {
+        host_id: hotelId,
+        roomTypeId: roomType._id,
+        checkIn,
+        checkOut,
+      });
+
       const overlappingBookings = await Booking.find({
-        room_id: roomType._id,
+        host_id: hotelId,
         status: { $nin: ["CANCELLED"] },
+        room_id: { $elemMatch: { $eq: roomType._id } },
         $or: [
           {
             check_in_date: { $lt: checkOut },
@@ -44,7 +56,11 @@ module.exports = async function handler(req, res) {
           },
         ],
       });
-      console.log("Overlapping bookings found:", overlappingBookings);
+
+      console.log(
+        "Query result:",
+        JSON.stringify(overlappingBookings, null, 2)
+      );
 
       const roomsBooked = overlappingBookings.reduce((total, booking) => {
         const roomCount = booking.room_id.filter(

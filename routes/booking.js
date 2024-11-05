@@ -10,7 +10,7 @@ const {
 } = require("../controllers/bookings");
 const { auth, restrictTo } = require("../middlewares/auth");
 
-router.get("/", auth, restrictTo("admin", "user", "owner"), getBookings);
+router.get("/", getBookings);
 
 router.post("/", createBooking);
 
