@@ -9,7 +9,9 @@ const initializeSocket = (server) => {
         "http://localhost:4300",
         "http://localhost:4200",
         "http://localhost:3001",
-        "https://booking-hoqp4yd9a-abdullahnabil22s-projects.vercel.app",
+        "https://booking-mearn-front.vercel.app",
+        "https://bookingadminpanel.netlify.app",
+        "https://bookingpartnerpanel.netlify.app",
       ],
       methods: ["GET", "POST"],
       credentials: true,
@@ -35,6 +37,11 @@ const initializeSocket = (server) => {
     socket.on("message_read", (messageId) => {
       console.log("Message marked as read:", messageId);
       socket.broadcast.emit("message_read", messageId);
+    });
+
+    socket.on("payout_status_update", (data) => {
+      console.log("Payout status update:", data);
+      io.emit("payout_status_update", data);
     });
 
     // Handle disconnection

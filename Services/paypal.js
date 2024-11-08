@@ -226,6 +226,7 @@ exports.createPayout = async (amount, paypalEmail, payoutRequestId) => {
 exports.getPayoutStatus = async (payoutBatchId) => {
   try {
     const accessToken = await generateAccessToken();
+    const socketService = require("./Socket.IOService");
 
     const response = await axios({
       url: `${process.env.PAYPAL_URL}/v1/payments/payouts/${payoutBatchId}`,
@@ -235,6 +236,34 @@ exports.getPayoutStatus = async (payoutBatchId) => {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+
+    if (response.data.batch_header.batch_status === "SUCCESS") {
+      const payoutRequest = await PayoutRequest.findOne({
+        payout_batch_id: payoutBatchId,
+      });
+
+      if (payoutRequest) {
+        payoutRequest.status = "COMPLETED";
+        await payoutRequest.save();
+
+        try {
+          const io = socketService.getIO();
+          io.emit("payout_status_update", {
+            type: "PAYOUT_COMPLETED",
+            data: {
+              owner_id: payoutRequest.owner_id,
+              amount: payoutRequest.amount,
+              paypalEmail: payoutRequest.payment_reference,
+              status: "COMPLETED",
+              updated_at: new Date(),
+              payout_batch_id: payoutBatchId,
+            },
+          });
+        } catch (socketError) {
+          console.error("Error sending WebSocket notification:", socketError);
+        }
+      }
+    }
 
     return response.data;
   } catch (error) {
