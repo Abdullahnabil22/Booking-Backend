@@ -18,6 +18,7 @@ app.use(
       "https://booking-mearn-front.vercel.app",
       "https://bookingadminpanel.netlify.app",
       "https://bookingpartnerpanel.netlify.app",
+      "https://booking-mearn.koyeb.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
